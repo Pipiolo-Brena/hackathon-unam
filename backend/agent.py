@@ -12,9 +12,6 @@ from strands.models import BedrockModel
 
 from backend import data_store as ds
 
-MODEL_ID = os.environ.get("BEDROCK_MODEL_ID", "us.amazon.nova-pro-v1:0")
-REGION = os.environ.get("AWS_REGION", "us-east-1")
-
 SYSTEM_PROMPT = """Eres analista táctico NFL para un Coach y un Broadcaster. Responde en español, claro y breve.
 Usa SIEMPRE las herramientas para obtener números; no inventes datos. Métricas propias:
 - SOE (Separación Sobre lo Esperado): separación del receptor objetivo al llegar el balón menos la media de su cobertura y zona del campo.
@@ -141,17 +138,26 @@ def local_answer(message: str, mode: str = "coach") -> dict:
 
 
 def chat(message: str, mode: str = "coach") -> dict:
+    # Se lee en cada llamada: main.py ya cargó el .env en os.environ antes de llegar aquí.
+    model_id = os.environ.get("BEDROCK_MODEL_ID", "us.amazon.nova-pro-v1:0")
+    region = os.environ.get("AWS_REGION", "us-east-1")
     try:
-        agent = Agent(model=BedrockModel(model_id=MODEL_ID, region_name=REGION), tools=TOOLS,
+        agent = Agent(model=BedrockModel(model_id=model_id, region_name=region), tools=TOOLS,
                       system_prompt=SYSTEM_PROMPT, callback_handler=None)
-        text = str(agent(f"[Audiencia: {mode}] {message}"))
+        result = agent(f"[Audiencia: {mode}] {message}")
+        text = str(result)
     except Exception as e:  # sin credenciales, sin red o Bedrock caído -> respaldo local
         out = local_answer(message, mode)
-        out["fallback_reason"] = type(e).__name__
+        out["fallback_reason"] = f"{type(e).__name__}: {str(e)[:300]}"
         return out
+    try:
+        tools_used = sorted(result.metrics.tool_metrics)
+    except AttributeError:
+        tools_used = []
     parsed = _extract_json(text) or {}
     reply = parsed.get("reply") or text.strip()
     rp = _valid_play(parsed.get("recommended_play"))
     if rp is None:
         rp = local_answer(message, mode)["recommended_play"]
-    return {"reply": reply, "recommended_play": rp, "source": "bedrock"}
+    return {"reply": reply, "recommended_play": rp, "source": "bedrock", "model": model_id,
+            "tools_used": tools_used}
