@@ -1,3 +1,43 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  /* NFL */
+  --nfl-blue: #013369;
+  --nfl-red: #D50A0A;
+  --nfl-white: #FFFFFF;
+  --gridiron-black: #000000;
+  --legacy-blue: #001D3C;
+  --impact-blue: #0074EE;
+  --legacy-red: #410000;
+  --unity-red: #A00000;
+  /* UNAM */
+  --unam-blue: #002B7A;
+  --unam-blue-alt: #013B75;
+  --unam-gold: #D59F0F;
+  --unam-gold-bright: #D9A500;
+  /* Texto auxiliar */
+  --muted: #9FB3C8;
+}
+
+@layer base {
+  html, body, #root { min-height: 100%; }
+  body {
+    @apply bg-gridiron-black text-nfl-white font-sans antialiased;
+    background-image:
+      radial-gradient(1200px 500px at 50% -10%, rgba(0, 116, 238, 0.14), transparent 60%),
+      linear-gradient(180deg, #001D3C 0%, #000000 480px);
+    background-attachment: fixed;
+  }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { background: var(--nfl-blue); border-radius: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  select, input, button { font: inherit; }
+}
+
+@layer components {
+  .yard-lines {
+    background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 10%);
+  }
+}
