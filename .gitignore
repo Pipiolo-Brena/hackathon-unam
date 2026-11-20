@@ -6,6 +6,7 @@
 node_modules/
 dist/
 __pycache__/
+.vscode/
 
 # Llaves y credenciales: nunca al repositorio
 .env
