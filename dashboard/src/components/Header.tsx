@@ -1,85 +1,83 @@
-import type { DashboardFilters, GameInfo, QuarterFilter } from '../types/nfl'
-import type { ViewMode } from './ui'
+import type { AppMode } from '../types/nfl'
+import { Goalpost } from './NflMotifs'
 
-interface Props {
-  games: GameInfo[]
-  filters: DashboardFilters
-  onFilters: (f: DashboardFilters) => void
-  mode: ViewMode
-  onMode: (m: ViewMode) => void
-  copilotOpen: boolean
-  onToggleCopilot: () => void
+export type ApiStatus = 'loading' | 'ok' | 'error' | 'mock'
+
+const STATUS: Record<ApiStatus, { label: string; dot: string }> = {
+  loading: { label: 'Conectando…', dot: 'bg-unam-gold-bright animate-pulse' },
+  ok: { label: 'API conectada', dot: 'bg-emerald-400' },
+  error: { label: 'API sin respuesta', dot: 'bg-nfl-red' },
+  mock: { label: 'Datos locales', dot: 'bg-unam-gold' },
 }
 
-const selectCls =
-  'rounded border border-nfl-blue bg-gridiron-black px-2 py-1.5 text-sm text-nfl-white focus:border-unam-gold focus:outline-none'
+interface Props {
+  mode: AppMode
+  onMode: (m: AppMode) => void
+  status: ApiStatus
+  copilotOpen: boolean
+  onToggleCopilot: () => void
+  onToggleSidebar: () => void
+}
 
-export default function Header({ games, filters, onFilters, mode, onMode, copilotOpen, onToggleCopilot }: Props) {
+export default function Header({ mode, onMode, status, copilotOpen, onToggleCopilot, onToggleSidebar }: Props) {
+  const s = STATUS[status]
   return (
-    <header className="fixed inset-x-0 top-0 z-30 border-b border-unam-blue bg-legacy-blue/95 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-[1600px] items-center gap-4 px-4">
-        <div className="mr-auto flex items-center gap-3">
-          <span className="h-9 w-1.5 rounded bg-gradient-to-b from-unam-gold to-unam-gold-bright" />
+    <header className="fixed inset-x-0 top-0 z-40 h-16 border-b-2 border-unam-gold bg-gradient-to-r from-nfl-blue via-nfl-blue to-unam-blue text-nfl-white shadow-lg">
+      <div className="flex h-full items-center gap-3 px-4">
+        <button
+          onClick={onToggleSidebar}
+          aria-label="Mostrar u ocultar menú"
+          className="rounded-md p-2 transition-colors duration-300 hover:bg-nfl-white/10"
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+            <path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+        </button>
+
+        <div className="mr-auto flex items-center gap-2.5">
+          <Goalpost size={30} />
           <div className="leading-none">
             <h1 className="font-display text-2xl font-bold uppercase tracking-wide">
-              NFL <span className="text-unam-gold">War Room</span>
+              NFL War Room <span className="text-unam-gold-bright">UNAM</span>
             </h1>
-            <p className="mt-0.5 text-[10px] uppercase tracking-[0.25em] text-[var(--muted)]">Big Data Bowl · UNAM</p>
+            <p className="mt-0.5 hidden text-[10px] uppercase tracking-[0.25em] text-nfl-white/70 sm:block">
+              Big Data Bowl 2023 · Semanas 1-8
+            </p>
           </div>
         </div>
 
-        <label className="hidden items-center gap-2 text-xs text-[var(--muted)] md:flex">
-          Partido
-          <select className={selectCls} value={filters.gameId} onChange={(e) => onFilters({ ...filters, gameId: e.target.value })}>
-            {games.map((g) => (
-              <option key={g.gameId} value={g.gameId}>
-                {g.label}
-              </option>
-            ))}
-          </select>
-        </label>
+        <span className="hidden items-center gap-2 rounded-full bg-nfl-white/10 px-3 py-1 text-xs md:inline-flex" role="status">
+          <span className={`h-2 w-2 rounded-full ${s.dot}`} />
+          {s.label}
+        </span>
 
-        <label className="hidden items-center gap-2 text-xs text-[var(--muted)] md:flex">
-          Cuarto
-          <select
-            className={selectCls}
-            value={filters.quarter}
-            onChange={(e) => onFilters({ ...filters, quarter: Number(e.target.value) as QuarterFilter })}
-          >
-            <option value={0}>Todos</option>
-            {[1, 2, 3, 4].map((q) => (
-              <option key={q} value={q}>
-                Q{q}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <div role="group" aria-label="Modo de vista" className="flex overflow-hidden rounded border border-nfl-blue text-xs font-semibold">
-          {(['coach', 'broadcast'] as const).map((m) => (
-            <button
-              key={m}
-              onClick={() => onMode(m)}
-              aria-pressed={mode === m}
-              className={`px-3 py-1.5 uppercase tracking-wider transition ${
-                mode === m ? 'bg-unam-gold text-gridiron-black' : 'text-[var(--muted)] hover:text-nfl-white'
-              }`}
-            >
-              {m === 'coach' ? 'Coach' : 'Broadcast'}
-            </button>
-          ))}
+        <div role="radiogroup" aria-label="Modo de análisis" className="flex rounded-lg bg-legacy-blue/60 p-1 text-xs font-bold uppercase tracking-wider">
+          {(['coach', 'scout'] as const).map((m) => {
+            const active = mode === m
+            const activeCls = m === 'scout' ? 'bg-unam-gold text-legacy-blue shadow-gold' : 'bg-nfl-white text-nfl-blue shadow'
+            return (
+              <button
+                key={m}
+                role="radio"
+                aria-checked={active}
+                onClick={() => onMode(m)}
+                className={`rounded-md px-3 py-1.5 transition-all duration-300 ${active ? activeCls : 'text-nfl-white/75 hover:text-nfl-white'}`}
+              >
+                Modo {m === 'coach' ? 'Coach' : 'Scout'}
+              </button>
+            )
+          })}
         </div>
 
         <button
           onClick={onToggleCopilot}
           aria-pressed={copilotOpen}
-          className={`rounded border px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition ${
-            copilotOpen
-              ? 'border-unam-gold bg-unam-gold/15 text-unam-gold shadow-glow'
-              : 'border-impact-blue text-impact-blue hover:bg-impact-blue/10'
+          className={`rounded-lg border px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-all duration-300 hover:-translate-y-0.5 ${
+            copilotOpen ? 'border-unam-gold bg-unam-gold text-legacy-blue' : 'border-nfl-white/40 text-nfl-white hover:border-unam-gold hover:text-unam-gold-bright'
           }`}
         >
-          {copilotOpen ? 'Ocultar Copiloto' : 'Copiloto Nova'}
+          <span className="hidden sm:inline">{copilotOpen ? 'Ocultar copiloto' : 'Copiloto Nova'}</span>
+          <span className="sm:hidden">Nova</span>
         </button>
       </div>
     </header>

@@ -1,83 +1,143 @@
 /**
- * Capa de acceso a datos. Hoy responde con mocks; cuando el backend FastAPI
- * exponga los endpoints, basta con poner USE_MOCK = false.
- * Las rutas son relativas y SIN diagonal inicial (la app se publica en una subruta).
+ * Acceso a la API FastAPI (backend/main.py).
+ * Rutas relativas SIN diagonal inicial: la app se publica en una subruta (/evento/equipo/).
+ * En desarrollo, Vite reenvía /api a http://localhost:8000 (vite.config.ts).
  */
-import { mockData } from '../data/mockData'
 import type {
-  DashboardFilters,
-  DefenseSectionData,
-  MatchupCrossData,
-  NovaQueryRequest,
-  NovaQueryResponse,
-  OffenseSectionData,
-  OverviewData,
-  PlayTrackingPlaceholder,
+  ChatRequest,
+  ChatResponse,
+  FeaturedPlay,
+  OverviewResponse,
+  PlayTrackingResponse,
+  PlaysQuery,
+  PlaysResponse,
+  ResearchInsightsResponse,
 } from '../types/nfl'
 
-export const USE_MOCK = true
+/** true = usa la copia local de src/data/mockData.ts (sin backend) */
+export const USE_MOCK = false
 
-const MOCK_LATENCY_MS = 350
-const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
+export type ApiErrorKind = 'network' | 'http' | 'not-ready' | 'parse'
 
-function toQuery(filters: DashboardFilters): string {
-  const params = new URLSearchParams({ gameId: filters.gameId, quarter: String(filters.quarter) })
-  return params.toString()
-}
-
-async function getJson<T>(path: string, filters: DashboardFilters, mock: T): Promise<T> {
-  if (USE_MOCK) {
-    await wait(MOCK_LATENCY_MS)
-    return structuredClone(mock)
+export class ApiError extends Error {
+  constructor(
+    public kind: ApiErrorKind,
+    message: string,
+    public status?: number,
+    public detail?: string,
+  ) {
+    super(message)
+    this.name = 'ApiError'
   }
-  const res = await fetch(`api/${path}?${toQuery(filters)}`)
-  if (!res.ok) throw new Error(`Error ${res.status} al consultar api/${path}`)
-  return (await res.json()) as T
 }
 
-/** GET api/overview → partidos disponibles y KPIs de cada pestaña */
-export function fetchOverview(filters: DashboardFilters): Promise<OverviewData> {
-  return getJson('overview', filters, mockData.overview)
-}
+const loadMock = () => import('../data/mockData')
+const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms))
 
-/** GET api/offense → seis módulos de la pestaña OFENSIVA */
-export function fetchOffenseData(filters: DashboardFilters): Promise<OffenseSectionData> {
-  return getJson('offense', filters, mockData.offense)
-}
-
-/** GET api/defense → seis módulos de la pestaña DEFENSIVA */
-export function fetchDefenseData(filters: DashboardFilters): Promise<DefenseSectionData> {
-  return getJson('defense', filters, mockData.defense)
-}
-
-/** GET api/matchups → cruces ofensiva vs. defensiva */
-export function fetchMatchupsData(filters: DashboardFilters): Promise<MatchupCrossData> {
-  return getJson('matchups', filters, mockData.matchups)
-}
-
-/** GET api/tracking → jugada para el Reconstructor 2D (siguiente fase) */
-export function fetchTrackingPlay(filters: DashboardFilters): Promise<PlayTrackingPlaceholder> {
-  return getJson('tracking', filters, mockData.tracking)
-}
-
-/** POST api/nova → Copiloto (Amazon Bedrock / Nova). Opcional: la app no depende de él. */
-export async function sendNovaQuery(request: NovaQueryRequest): Promise<NovaQueryResponse> {
-  if (USE_MOCK) {
-    await wait(MOCK_LATENCY_MS + 400)
-    return {
-      available: true,
-      model: 'mock',
-      answer:
-        `[Respuesta simulada] Sobre "${request.question}": en los datos de muestra, ` +
-        'la presión baja el rendimiento ofensivo de 8.1 a 3.9 yardas por jugada. ' +
-        'Cuando el backend esté conectado, aquí responderá Amazon Nova.',
-    }
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  let res: Response
+  try {
+    res = await fetch(`api/${path}`, { headers: { Accept: 'application/json' }, ...init })
+  } catch {
+    throw new ApiError('network', 'No se pudo conectar con el backend.')
   }
-  const res = await fetch('api/nova', {
+  const text = await res.text()
+  let body: unknown = null
+  try {
+    body = text ? JSON.parse(text) : null
+  } catch {
+    // El proxy de Vite responde texto/HTML cuando Uvicorn no está corriendo
+    if (!res.ok) throw new ApiError('network', 'El backend no responde.', res.status)
+    throw new ApiError('parse', 'La respuesta de la API no es JSON.', res.status)
+  }
+  if (!res.ok) {
+    const detail =
+      body && typeof body === 'object' && 'detail' in body
+        ? typeof body.detail === 'string'
+          ? body.detail
+          : JSON.stringify(body.detail)
+        : undefined
+    if (res.status === 503) throw new ApiError('not-ready', 'Los datos del análisis no están listos.', 503, detail)
+    if (res.status >= 500 && !detail) throw new ApiError('network', 'El backend no responde.', res.status)
+    throw new ApiError('http', `Error ${res.status} en api/${path}`, res.status, detail)
+  }
+  return body as T
+}
+
+/** GET api/overview · KPIs de temporada, distribuciones, curva de tiempo en bolsa y reglas */
+export async function fetchOverview(): Promise<OverviewResponse> {
+  if (USE_MOCK) {
+    await wait(300)
+    return (await loadMock()).mockOverview
+  }
+  return request<OverviewResponse>('overview')
+}
+
+/** GET api/research-insights · clusters K-Means, rankings de jugadores y Trampa de Presión */
+export async function fetchResearchInsights(): Promise<ResearchInsightsResponse> {
+  if (USE_MOCK) {
+    await wait(300)
+    return (await loadMock()).mockResearch
+  }
+  return request<ResearchInsightsResponse>('research-insights')
+}
+
+/** GET api/plays · jugadas destacadas con tracking; filtra en servidor por cluster, cobertura, equipo y etiqueta */
+export async function fetchPlays(query: PlaysQuery = {}): Promise<FeaturedPlay[]> {
+  if (USE_MOCK) {
+    await wait(200)
+    const { mockPlays } = await loadMock()
+    return mockPlays.filter(
+      (p) =>
+        (query.cluster_id === undefined || p.cluster_id === query.cluster_id) &&
+        (!query.coverage || (p.pff_passCoverage ?? '').toLowerCase() === query.coverage.toLowerCase()) &&
+        (!query.team || [p.possessionTeam, p.defensiveTeam].includes(query.team.toUpperCase())) &&
+        (!query.tag || p.tags.includes(query.tag)),
+    )
+  }
+  const params = new URLSearchParams()
+  if (query.cluster_id !== undefined) params.set('cluster_id', String(query.cluster_id))
+  if (query.coverage) params.set('coverage', query.coverage)
+  if (query.team) params.set('team', query.team)
+  if (query.tag) params.set('tag', query.tag)
+  const qs = params.toString()
+  const data = await request<PlaysResponse>(`plays${qs ? `?${qs}` : ''}`)
+  return data.plays
+}
+
+/** GET api/plays/{gameId}/{playId}/tracking · frames normalizados (ataque hacia la derecha) */
+export async function fetchPlayTracking(gameId: number, playId: number): Promise<PlayTrackingResponse> {
+  if (USE_MOCK) {
+    await wait(300)
+    const { mockTracking } = await loadMock()
+    return { ...mockTracking, gameId, playId }
+  }
+  return request<PlayTrackingResponse>(`plays/${gameId}/${playId}/tracking`)
+}
+
+/** POST api/chat · Copiloto (Strands + Amazon Nova). El backend responde con un respaldo local si Bedrock falla. */
+export async function sendNovaQuery(body: ChatRequest): Promise<ChatResponse> {
+  if (USE_MOCK) {
+    await wait(700)
+    return (await loadMock()).mockChat
+  }
+  return request<ChatResponse>('chat', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(request),
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify(body),
   })
-  if (!res.ok) throw new Error(`Error ${res.status} al consultar api/nova`)
-  return (await res.json()) as NovaQueryResponse
+}
+
+/** Mensaje amigable para la interfaz */
+export function describeError(err: unknown): { title: string; detail: string } {
+  if (err instanceof ApiError) {
+    if (err.kind === 'network')
+      return {
+        title: 'El backend no responde',
+        detail: 'Inicia la API con: .venv/bin/uvicorn backend.main:app --reload --port 8000',
+      }
+    if (err.kind === 'not-ready') return { title: err.message, detail: err.detail ?? 'Ejecuta scripts/01_analisis_y_clustering.py' }
+    return { title: err.message, detail: err.detail ?? '' }
+  }
+  return { title: 'Error inesperado', detail: err instanceof Error ? err.message : String(err) }
 }
