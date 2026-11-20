@@ -1,0 +1,9 @@
+﻿38: # El README escribe 'Pass route'; el CSV trae 'Pass Route'. Se normaliza a minusculas.
+155:         # separacion: receptores (Pass route) vs defensores
+156:         roles = np.array([pff_role.get((gid, int(pid), int(u)), "") for u in uid])
+157:         rr = off & (roles == "pass route")
+211:     n_pass_rush=("pff_role", lambda s: int((s == "pass rush").sum())),
+212:     n_coverage=("pff_role", lambda s: int((s == "coverage").sum())),
+213:     n_pass_block=("pff_role", lambda s: int((s == "pass block").sum())),
+269: rules = {"por_cobertura": grp("pff_passCoverage"), "por_tipo_cobertura": grp("pff_passCoverageType"),
+441: w("\nSeparacion: distancia euclidiana entre cada receptor (pff_role = Pass route) y el defensor mas cercano; "

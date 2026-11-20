@@ -1,0 +1,1304 @@
+{
+ "tablas": {
+  "games": 122,
+  "plays": 8557,
+  "players": 1679,
+  "pff": 188254,
+  "tracking_archivos": 122
+ },
+ "unicidad": {
+  "games.gameId": true,
+  "plays.(gameId,playId)": true,
+  "players.nflId": true,
+  "pff.(gameId,playId,nflId)": true
+ },
+ "pff_filas_por_jugada": {
+  "count": 8557.0,
+  "mean": 22.0,
+  "std": 0.0,
+  "min": 22.0,
+  "25%": 22.0,
+  "50%": 22.0,
+  "75%": 22.0,
+  "max": 22.0
+ },
+ "tracking": {
+  "filas": 8314178,
+  "filas_balon": 361486,
+  "filas_jugador": 7952692,
+  "duplicados_llave": 0,
+  "nulos_jugador": {
+   "x": 0,
+   "y": 0,
+   "s": 0,
+   "a": 0,
+   "dis": 0,
+   "o": 0,
+   "dir": 0,
+   "event": 7339728,
+   "jerseyNumber": 0,
+   "nflId": 0
+  },
+  "nulos_balon": {
+   "x": 0,
+   "y": 0,
+   "s": 0,
+   "a": 0,
+   "dis": 0,
+   "o": 361486,
+   "dir": 361486,
+   "event": 333624,
+   "jerseyNumber": 361486,
+   "nflId": 361486
+  },
+  "dir_left": 4431,
+  "dir_right": 4126,
+  "jugadas_frames_irregulares": 0,
+  "jugadas_balon_incompleto": 0,
+  "check_ofensiva_izq": 8557,
+  "check_total": 8557,
+  "frames_por_jugada": {
+   "min": 19,
+   "mediana": 39.0,
+   "max": 203
+  }
+ },
+ "huerfanos": {
+  "plays_sin_game": 0,
+  "games_sin_plays": 0,
+  "pff_sin_play": 0,
+  "pff_sin_player": 0,
+  "plays_sin_pff": 0,
+  "tracking_jugadas_sin_play": 0,
+  "plays_sin_tracking": 0,
+  "tracking_nflId_sin_player": 0
+ },
+ "nulos_plays": {
+  "yardlineSide": {
+   "n": 125,
+   "pct": 1.46
+  },
+  "penaltyYards": {
+   "n": 7801,
+   "pct": 91.17
+  },
+  "foulName1": {
+   "n": 7821,
+   "pct": 91.4
+  },
+  "foulNFLId1": {
+   "n": 7821,
+   "pct": 91.4
+  },
+  "foulName2": {
+   "n": 8527,
+   "pct": 99.65
+  },
+  "foulNFLId2": {
+   "n": 8527,
+   "pct": 99.65
+  },
+  "foulName3": {
+   "n": 8556,
+   "pct": 99.99
+  },
+  "foulNFLId3": {
+   "n": 8556,
+   "pct": 99.99
+  },
+  "absoluteYardlineNumber": {
+   "n": 1,
+   "pct": 0.01
+  },
+  "offenseFormation": {
+   "n": 7,
+   "pct": 0.08
+  },
+  "personnelO": {
+   "n": 1,
+   "pct": 0.01
+  },
+  "defendersInBox": {
+   "n": 7,
+   "pct": 0.08
+  },
+  "personnelD": {
+   "n": 1,
+   "pct": 0.01
+  },
+  "dropBackType": {
+   "n": 528,
+   "pct": 6.17
+  }
+ },
+ "nulos_estructurales": {
+  "balon_nflId_nulo_en_tracking": "estructural: filas con team=football (1 por frame)",
+  "foulName*/foulNFLId*/penaltyYards": "estructural: nulo cuando no hubo castigo",
+  "pff_hit/hurry/sack (pff)": "nulo = sin credito, no dato perdido",
+  "pff_nflIdBlockedPlayer/blockType": "nulo en jugadores que no bloquean",
+  "event (tracking)": "nulo en la mayoria de frames; solo se marca en eventos"
+ },
+ "nulos_pff": {
+  "pff_hit": 94127,
+  "pff_hurry": 94127,
+  "pff_sack": 94127,
+  "pff_beatenByDefender": 140167,
+  "pff_hitAllowed": 140167,
+  "pff_hurryAllowed": 140167,
+  "pff_sackAllowed": 140167,
+  "pff_nflIdBlockedPlayer": 141728,
+  "pff_blockType": 140350,
+  "pff_backFieldBlock": 140351
+ },
+ "pff_role_valores_crudos": {
+  "Coverage": 57765,
+  "Pass Block": 46057,
+  "Pass Route": 39513,
+  "Pass Rush": 36362,
+  "Pass": 8557
+ },
+ "pct_jugadas_con_castigo": 8.6,
+ "jugadas_con_metricas_tracking": 8557,
+ "generales": {
+  "jugadas": 8557,
+  "juegos": 122,
+  "semanas": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8
+  ],
+  "passResult": {
+   "C": 4620,
+   "I": 2755,
+   "S": 543,
+   "R": 449,
+   "IN": 190
+  },
+  "down": {
+   "1": 3071,
+   "2": 2826,
+   "3": 2394,
+   "4": 231,
+   "0": 35
+  },
+  "quarter": {
+   "4": 2446,
+   "2": 2441,
+   "3": 1837,
+   "1": 1735,
+   "5": 98
+  },
+  "offenseFormation": {
+   "SHOTGUN": 5481,
+   "EMPTY": 1396,
+   "SINGLEBACK": 1189,
+   "I_FORM": 298,
+   "PISTOL": 154,
+   "JUMBO": 30,
+   "nan": 7,
+   "WILDCAT": 2
+  },
+  "dropBackType": {
+   "TRADITIONAL": 6542,
+   "SCRAMBLE": 899,
+   "nan": 528,
+   "DESIGNED_ROLLOUT_RIGHT": 285,
+   "DESIGNED_ROLLOUT_LEFT": 149,
+   "SCRAMBLE_ROLLOUT_RIGHT": 125,
+   "SCRAMBLE_ROLLOUT_LEFT": 23,
+   "DESIGNED_RUN": 5,
+   "UNKNOWN": 1
+  },
+  "pff_passCoverage": {
+   "Cover-3": 2665,
+   "Cover-1": 2011,
+   "Cover-2": 1085,
+   "Quarters": 1033,
+   "Cover-6": 805,
+   "Red Zone": 376,
+   "Cover-0": 270,
+   "2-Man": 200,
+   "Bracket": 47,
+   "Prevent": 32,
+   "Goal Line": 25,
+   "Miscellaneous": 8
+  },
+  "pff_passCoverageType": {
+   "Zone": 5588,
+   "Man": 2481,
+   "Other": 488
+  },
+  "pff_playAction": {
+   "0": 6519,
+   "1": 2038
+  },
+  "defendersInBox": {
+   "6.0": 4003,
+   "7.0": 1831,
+   "5.0": 1644,
+   "4.0": 486,
+   "8.0": 475,
+   "3.0": 50,
+   "9.0": 32,
+   "11.0": 13,
+   "10.0": 10,
+   "nan": 7,
+   "2.0": 5,
+   "1.0": 1
+  },
+  "playResult": {
+   "count": 8557.0,
+   "mean": 6.564,
+   "std": 10.611,
+   "min": -34.0,
+   "25%": 0.0,
+   "50%": 5.0,
+   "75%": 11.0,
+   "max": 91.0
+  },
+  "yardsToGo_por_down": {
+   "0": 0.0,
+   "1": 10.23,
+   "2": 8.6,
+   "3": 7.38,
+   "4": 5.5
+  },
+  "playResult_media_por_down": {
+   "0": 0.11,
+   "1": 7.02,
+   "2": 6.63,
+   "3": 6.14,
+   "4": 5.16
+  },
+  "tasa_explosiva_15mas": 0.1658,
+  "tasa_presion_pff": 0.3758,
+  "marcador_aprox_final_promedio": {
+   "local": 23.13,
+   "visitante": 22.43
+  },
+  "equipos_ofensiva": {
+   "ARI": {
+    "jugadas": 235.0,
+    "yds_prom": 7.885,
+    "explosivas": 0.2,
+    "presion_sufrida": 0.37
+   },
+   "ATL": {
+    "jugadas": 289.0,
+    "yds_prom": 6.28,
+    "explosivas": 0.163,
+    "presion_sufrida": 0.374
+   },
+   "BAL": {
+    "jugadas": 271.0,
+    "yds_prom": 7.14,
+    "explosivas": 0.188,
+    "presion_sufrida": 0.406
+   },
+   "BUF": {
+    "jugadas": 254.0,
+    "yds_prom": 6.937,
+    "explosivas": 0.173,
+    "presion_sufrida": 0.437
+   },
+   "CAR": {
+    "jugadas": 294.0,
+    "yds_prom": 5.935,
+    "explosivas": 0.163,
+    "presion_sufrida": 0.429
+   },
+   "CHI": {
+    "jugadas": 248.0,
+    "yds_prom": 5.141,
+    "explosivas": 0.137,
+    "presion_sufrida": 0.375
+   },
+   "CIN": {
+    "jugadas": 258.0,
+    "yds_prom": 7.845,
+    "explosivas": 0.194,
+    "presion_sufrida": 0.326
+   },
+   "CLE": {
+    "jugadas": 249.0,
+    "yds_prom": 5.731,
+    "explosivas": 0.153,
+    "presion_sufrida": 0.353
+   },
+   "DAL": {
+    "jugadas": 261.0,
+    "yds_prom": 7.222,
+    "explosivas": 0.195,
+    "presion_sufrida": 0.322
+   },
+   "DEN": {
+    "jugadas": 292.0,
+    "yds_prom": 6.688,
+    "explosivas": 0.161,
+    "presion_sufrida": 0.408
+   },
+   "DET": {
+    "jugadas": 328.0,
+    "yds_prom": 5.21,
+    "explosivas": 0.137,
+    "presion_sufrida": 0.396
+   },
+   "GB": {
+    "jugadas": 226.0,
+    "yds_prom": 7.15,
+    "explosivas": 0.217,
+    "presion_sufrida": 0.332
+   },
+   "HOU": {
+    "jugadas": 251.0,
+    "yds_prom": 5.912,
+    "explosivas": 0.135,
+    "presion_sufrida": 0.406
+   },
+   "IND": {
+    "jugadas": 258.0,
+    "yds_prom": 6.76,
+    "explosivas": 0.155,
+    "presion_sufrida": 0.438
+   },
+   "JAX": {
+    "jugadas": 264.0,
+    "yds_prom": 5.648,
+    "explosivas": 0.121,
+    "presion_sufrida": 0.398
+   },
+   "KC": {
+    "jugadas": 339.0,
+    "yds_prom": 6.481,
+    "explosivas": 0.142,
+    "presion_sufrida": 0.369
+   },
+   "LA": {
+    "jugadas": 251.0,
+    "yds_prom": 8.482,
+    "explosivas": 0.207,
+    "presion_sufrida": 0.279
+   },
+   "LAC": {
+    "jugadas": 274.0,
+    "yds_prom": 6.124,
+    "explosivas": 0.153,
+    "presion_sufrida": 0.314
+   },
+   "LV": {
+    "jugadas": 264.0,
+    "yds_prom": 7.761,
+    "explosivas": 0.22,
+    "presion_sufrida": 0.375
+   },
+   "MIA": {
+    "jugadas": 309.0,
+    "yds_prom": 5.317,
+    "explosivas": 0.136,
+    "presion_sufrida": 0.44
+   },
+   "MIN": {
+    "jugadas": 254.0,
+    "yds_prom": 6.626,
+    "explosivas": 0.173,
+    "presion_sufrida": 0.374
+   },
+   "NE": {
+    "jugadas": 286.0,
+    "yds_prom": 6.35,
+    "explosivas": 0.154,
+    "presion_sufrida": 0.336
+   },
+   "NO": {
+    "jugadas": 203.0,
+    "yds_prom": 6.222,
+    "explosivas": 0.138,
+    "presion_sufrida": 0.473
+   },
+   "NYG": {
+    "jugadas": 299.0,
+    "yds_prom": 6.408,
+    "explosivas": 0.161,
+    "presion_sufrida": 0.375
+   },
+   "NYJ": {
+    "jugadas": 271.0,
+    "yds_prom": 6.0,
+    "explosivas": 0.151,
+    "presion_sufrida": 0.413
+   },
+   "PHI": {
+    "jugadas": 255.0,
+    "yds_prom": 6.365,
+    "explosivas": 0.173,
+    "presion_sufrida": 0.451
+   },
+   "PIT": {
+    "jugadas": 238.0,
+    "yds_prom": 5.979,
+    "explosivas": 0.122,
+    "presion_sufrida": 0.273
+   },
+   "SEA": {
+    "jugadas": 233.0,
+    "yds_prom": 7.579,
+    "explosivas": 0.189,
+    "presion_sufrida": 0.451
+   },
+   "SF": {
+    "jugadas": 219.0,
+    "yds_prom": 7.621,
+    "explosivas": 0.201,
+    "presion_sufrida": 0.352
+   },
+   "TB": {
+    "jugadas": 309.0,
+    "yds_prom": 7.379,
+    "explosivas": 0.194,
+    "presion_sufrida": 0.262
+   },
+   "TEN": {
+    "jugadas": 277.0,
+    "yds_prom": 6.419,
+    "explosivas": 0.148,
+    "presion_sufrida": 0.383
+   },
+   "WAS": {
+    "jugadas": 298.0,
+    "yds_prom": 6.413,
+    "explosivas": 0.178,
+    "presion_sufrida": 0.352
+   }
+  }
+ },
+ "metricas_derivadas": {
+  "dev_time_s": {
+   "count": 8557.0,
+   "mean": 3.535,
+   "std": 1.109,
+   "min": 0.5,
+   "25%": 2.8,
+   "50%": 3.3,
+   "75%": 4.0,
+   "max": 10.3
+  },
+  "time_to_throw_s": {
+   "count": 7547.0,
+   "mean": 2.944,
+   "std": 1.012,
+   "min": 0.9,
+   "25%": 2.3,
+   "50%": 2.7,
+   "75%": 3.3,
+   "max": 9.8
+  },
+  "max_speed_off": {
+   "count": 8557.0,
+   "mean": 7.972,
+   "std": 0.855,
+   "min": 1.84,
+   "25%": 7.39,
+   "50%": 7.99,
+   "75%": 8.58,
+   "max": 11.18
+  },
+  "max_speed_def": {
+   "count": 8557.0,
+   "mean": 7.067,
+   "std": 1.114,
+   "min": 2.23,
+   "25%": 6.23,
+   "50%": 7.02,
+   "75%": 7.89,
+   "max": 10.39
+  },
+  "max_acc_off": {
+   "count": 8557.0,
+   "mean": 6.33,
+   "std": 1.04,
+   "min": 3.27,
+   "25%": 5.67,
+   "50%": 6.18,
+   "75%": 6.8,
+   "max": 18.05
+  },
+  "max_acc_def": {
+   "count": 8557.0,
+   "mean": 6.092,
+   "std": 0.993,
+   "min": 3.21,
+   "25%": 5.43,
+   "50%": 6.01,
+   "75%": 6.62,
+   "max": 21.92
+  },
+  "sep_min_route_yd": {
+   "count": 8557.0,
+   "mean": 0.73,
+   "std": 0.325,
+   "min": 0.063,
+   "25%": 0.529,
+   "50%": 0.674,
+   "75%": 0.851,
+   "max": 4.113
+  },
+  "sep_mean_route_yd": {
+   "count": 8557.0,
+   "mean": 3.475,
+   "std": 0.959,
+   "min": 1.092,
+   "25%": 2.768,
+   "50%": 3.458,
+   "75%": 4.102,
+   "max": 9.573
+  },
+  "sep_target_arrival_yd": {
+   "count": 418.0,
+   "mean": 3.68,
+   "std": 2.199,
+   "min": 0.344,
+   "25%": 1.901,
+   "50%": 3.272,
+   "75%": 5.297,
+   "max": 9.872
+  }
+ },
+ "balon_normalizacion_check_pct_ofensiva_a_la_izq_del_snap": 100.0,
+ "reglas_patrones": {
+  "por_cobertura": {
+   "2-Man": {
+    "n": 200.0,
+    "yds": 7.93,
+    "explosiva": 0.245,
+    "presion": 0.405,
+    "t_throw": 3.176,
+    "sep": 1.574
+   },
+   "Cover-0": {
+    "n": 270.0,
+    "yds": 5.037,
+    "explosiva": 0.119,
+    "presion": 0.511,
+    "t_throw": 2.492,
+    "sep": 1.279
+   },
+   "Cover-1": {
+    "n": 2011.0,
+    "yds": 6.655,
+    "explosiva": 0.182,
+    "presion": 0.404,
+    "t_throw": 2.856,
+    "sep": 2.95
+   },
+   "Cover-2": {
+    "n": 1085.0,
+    "yds": 6.509,
+    "explosiva": 0.166,
+    "presion": 0.341,
+    "t_throw": 3.016,
+    "sep": 4.795
+   },
+   "Cover-3": {
+    "n": 2665.0,
+    "yds": 6.904,
+    "explosiva": 0.175,
+    "presion": 0.363,
+    "t_throw": 2.952,
+    "sep": 3.992
+   },
+   "Cover-6": {
+    "n": 805.0,
+    "yds": 6.875,
+    "explosiva": 0.18,
+    "presion": 0.34,
+    "t_throw": 2.987,
+    "sep": 3.434
+   },
+   "Quarters": {
+    "n": 1033.0,
+    "yds": 7.041,
+    "explosiva": 0.156,
+    "presion": 0.356,
+    "t_throw": 2.952,
+    "sep": 3.162
+   },
+   "Red Zone": {
+    "n": 376.0,
+    "yds": 2.298,
+    "explosiva": 0.003,
+    "presion": 0.428,
+    "t_throw": 3.14,
+    "sep": 2.433
+   }
+  },
+  "por_tipo_cobertura": {
+   "Man": {
+    "n": 2481.0,
+    "yds": 6.582,
+    "explosiva": 0.181,
+    "presion": 0.416,
+    "t_throw": 2.838,
+    "sep": 2.763
+   },
+   "Other": {
+    "n": 488.0,
+    "yds": 3.219,
+    "explosiva": 0.039,
+    "presion": 0.42,
+    "t_throw": 3.194,
+    "sep": 2.508
+   },
+   "Zone": {
+    "n": 5588.0,
+    "yds": 6.848,
+    "explosiva": 0.17,
+    "presion": 0.354,
+    "t_throw": 2.97,
+    "sep": 3.958
+   }
+  },
+  "por_formacion": {
+   "EMPTY": {
+    "n": 1396.0,
+    "yds": 6.55,
+    "explosiva": 0.143,
+    "presion": 0.357,
+    "t_throw": 2.731,
+    "sep": 2.684
+   },
+   "I_FORM": {
+    "n": 298.0,
+    "yds": 7.359,
+    "explosiva": 0.225,
+    "presion": 0.339,
+    "t_throw": 3.162,
+    "sep": 3.528
+   },
+   "PISTOL": {
+    "n": 154.0,
+    "yds": 7.123,
+    "explosiva": 0.156,
+    "presion": 0.312,
+    "t_throw": 3.115,
+    "sep": 3.454
+   },
+   "SHOTGUN": {
+    "n": 5481.0,
+    "yds": 6.276,
+    "explosiva": 0.157,
+    "presion": 0.386,
+    "t_throw": 2.913,
+    "sep": 3.826
+   },
+   "SINGLEBACK": {
+    "n": 1189.0,
+    "yds": 7.741,
+    "explosiva": 0.224,
+    "presion": 0.364,
+    "t_throw": 3.264,
+    "sep": 4.275
+   }
+  },
+  "por_dropback": {
+   "DESIGNED_ROLLOUT_LEFT": {
+    "n": 149.0,
+    "yds": 6.812,
+    "explosiva": 0.154,
+    "presion": 0.315,
+    "t_throw": 3.186,
+    "sep": 5.033
+   },
+   "DESIGNED_ROLLOUT_RIGHT": {
+    "n": 285.0,
+    "yds": 6.021,
+    "explosiva": 0.133,
+    "presion": 0.256,
+    "t_throw": 3.041,
+    "sep": 4.394
+   },
+   "SCRAMBLE": {
+    "n": 899.0,
+    "yds": 6.821,
+    "explosiva": 0.159,
+    "presion": 0.736,
+    "t_throw": 5.203,
+    "sep": 3.298
+   },
+   "SCRAMBLE_ROLLOUT_RIGHT": {
+    "n": 125.0,
+    "yds": 6.752,
+    "explosiva": 0.16,
+    "presion": 0.448,
+    "t_throw": 4.711,
+    "sep": 2.899
+   },
+   "TRADITIONAL": {
+    "n": 6542.0,
+    "yds": 6.795,
+    "explosiva": 0.167,
+    "presion": 0.318,
+    "t_throw": 2.705,
+    "sep": 3.662
+   }
+  },
+  "por_play_action": {
+   "0": {
+    "n": 6519.0,
+    "yds": 6.169,
+    "explosiva": 0.144,
+    "presion": 0.372,
+    "t_throw": 2.814,
+    "sep": 3.526
+   },
+   "1": {
+    "n": 2038.0,
+    "yds": 7.828,
+    "explosiva": 0.236,
+    "presion": 0.388,
+    "t_throw": 3.368,
+    "sep": 4.156
+   }
+  },
+  "por_down": {
+   "1": {
+    "n": 3071.0,
+    "yds": 7.015,
+    "explosiva": 0.176,
+    "presion": 0.321,
+    "t_throw": 2.989,
+    "sep": 4.027
+   },
+   "2": {
+    "n": 2826.0,
+    "yds": 6.629,
+    "explosiva": 0.167,
+    "presion": 0.354,
+    "t_throw": 2.844,
+    "sep": 3.518
+   },
+   "3": {
+    "n": 2394.0,
+    "yds": 6.138,
+    "explosiva": 0.155,
+    "presion": 0.454,
+    "t_throw": 2.99,
+    "sep": 3.315
+   },
+   "4": {
+    "n": 231.0,
+    "yds": 5.16,
+    "explosiva": 0.16,
+    "presion": 0.554,
+    "t_throw": 3.12,
+    "sep": 3.771
+   }
+  },
+  "por_defenders_in_box": {
+   "4.0": {
+    "n": 486.0,
+    "yds": 6.634,
+    "explosiva": 0.148,
+    "presion": 0.399,
+    "t_throw": 3.054,
+    "sep": 4.284
+   },
+   "5.0": {
+    "n": 1644.0,
+    "yds": 6.357,
+    "explosiva": 0.152,
+    "presion": 0.379,
+    "t_throw": 2.883,
+    "sep": 3.215
+   },
+   "6.0": {
+    "n": 4003.0,
+    "yds": 6.58,
+    "explosiva": 0.164,
+    "presion": 0.373,
+    "t_throw": 2.917,
+    "sep": 3.713
+   },
+   "7.0": {
+    "n": 1831.0,
+    "yds": 6.634,
+    "explosiva": 0.178,
+    "presion": 0.372,
+    "t_throw": 2.967,
+    "sep": 3.718
+   },
+   "8.0": {
+    "n": 475.0,
+    "yds": 7.32,
+    "explosiva": 0.217,
+    "presion": 0.377,
+    "t_throw": 3.108,
+    "sep": 3.914
+   }
+  },
+  "por_resultado": {
+   "C": {
+    "n": 4620.0,
+    "yds": 11.681,
+    "explosiva": 0.271,
+    "presion": 0.245,
+    "t_throw": 2.791,
+    "sep": 3.904
+   },
+   "I": {
+    "n": 2755.0,
+    "yds": 0.913,
+    "explosiva": 0.036,
+    "presion": 0.441,
+    "t_throw": 3.175,
+    "sep": 2.906
+   },
+   "IN": {
+    "n": 190.0,
+    "yds": 0.0,
+    "explosiva": 0.0,
+    "presion": 0.395,
+    "t_throw": 3.332,
+    "sep": 3.126
+   },
+   "R": {
+    "n": 449.0,
+    "yds": 7.165,
+    "explosiva": 0.134,
+    "presion": 0.559,
+    "t_throw": 3.8,
+    "sep": null
+   },
+   "S": {
+    "n": 543.0,
+    "yds": -6.499,
+    "explosiva": 0.011,
+    "presion": 1.0,
+    "t_throw": 2.975,
+    "sep": null
+   }
+  },
+  "por_pass_rushers": {
+   "<=3": {
+    "n": 439.0,
+    "yds": 7.362,
+    "explosiva": 0.15,
+    "presion": 0.237,
+    "t_throw": 3.215,
+    "sep": 2.598
+   },
+   "4": {
+    "n": 6011.0,
+    "yds": 6.532,
+    "explosiva": 0.16,
+    "presion": 0.351,
+    "t_throw": 2.997,
+    "sep": 3.787
+   },
+   "5": {
+    "n": 1689.0,
+    "yds": 6.492,
+    "explosiva": 0.187,
+    "presion": 0.467,
+    "t_throw": 2.768,
+    "sep": 3.555
+   },
+   "6+": {
+    "n": 418.0,
+    "yds": 6.483,
+    "explosiva": 0.175,
+    "presion": 0.517,
+    "t_throw": 2.606,
+    "sep": 2.699
+   }
+  },
+  "por_tiempo_hasta_lanzar": {
+   "<=2.0": {
+    "n": 1135.0,
+    "yds": 5.989,
+    "explosiva": 0.071,
+    "presion": 0.114,
+    "t_throw": 1.827,
+    "sep": 2.665
+   },
+   "2-2.5": {
+    "n": 1872.0,
+    "yds": 6.87,
+    "explosiva": 0.14,
+    "presion": 0.214,
+    "t_throw": 2.312,
+    "sep": 3.8
+   },
+   "2.5-3": {
+    "n": 1885.0,
+    "yds": 7.78,
+    "explosiva": 0.202,
+    "presion": 0.31,
+    "t_throw": 2.789,
+    "sep": 4.031
+   },
+   "3-4": {
+    "n": 1814.0,
+    "yds": 9.019,
+    "explosiva": 0.253,
+    "presion": 0.389,
+    "t_throw": 3.446,
+    "sep": 4.003
+   },
+   ">4": {
+    "n": 841.0,
+    "yds": 6.7,
+    "explosiva": 0.196,
+    "presion": 0.703,
+    "t_throw": 5.126,
+    "sep": 3.542
+   }
+  },
+  "presion_vs_no": {
+   "0": {
+    "n": 5341.0,
+    "yds": 8.147,
+    "explosiva": 0.186,
+    "presion": 0.0,
+    "t_throw": 2.694,
+    "sep": 3.515
+   },
+   "1": {
+    "n": 3216.0,
+    "yds": 3.935,
+    "explosiva": 0.132,
+    "presion": 1.0,
+    "t_throw": 3.477,
+    "sep": 4.065
+   }
+  },
+  "correlaciones_playResult": {
+   "playResult": 1.0,
+   "time_to_throw_s": 0.02,
+   "presion": -0.192,
+   "n_pass_rush": -0.012,
+   "sep_target_arrival_yd": 0.243,
+   "max_speed_off": 0.131,
+   "dev_time_s": -0.049,
+   "defendersInBox": 0.005,
+   "yardsToGo": 0.038,
+   "yds_to_endzone": 0.116
+  }
+ },
+ "clustering_features": [
+  "down",
+  "yardsToGo",
+  "yds_to_endzone",
+  "score_diff_off",
+  "defendersInBox",
+  "time_event_s",
+  "n_pass_rush",
+  "presion",
+  "sep_target_arrival_yd",
+  "max_speed_off",
+  "playResult"
+ ],
+ "clustering_n": 8557,
+ "clustering": {
+  "k3": {
+   "inercia": 76239.8,
+   "varianza_explicada_pct": 19.0,
+   "silhouette_muestra": 0.115,
+   "estabilidad_semillas": 0.998,
+   "clusters": [
+    {
+     "cluster": 0,
+     "n": 3667,
+     "pct": 42.85,
+     "centroide_real": {
+      "down": 1.557,
+      "yardsToGo": 10.327,
+      "yds_to_endzone": 58.388,
+      "score_diff_off": -4.203,
+      "defendersInBox": 5.935,
+      "time_event_s": 2.745,
+      "n_pass_rush": 4.095,
+      "presion": 0.025,
+      "sep_target_arrival_yd": 4.356,
+      "max_speed_off": 7.947,
+      "playResult": 9.2
+     },
+     "centroide_z": {
+      "down": -0.47,
+      "yardsToGo": 0.41,
+      "yds_to_endzone": 0.293,
+      "score_diff_off": -0.082,
+      "defendersInBox": -0.087,
+      "time_event_s": -0.334,
+      "n_pass_rush": -0.235,
+      "presion": -0.725,
+      "sep_target_arrival_yd": 0.363,
+      "max_speed_off": -0.03,
+      "playResult": 0.248
+     },
+     "tasa_explosiva": 0.213,
+     "tasa_sack": 0.0,
+     "tasa_incompleto": 0.253,
+     "cobertura_top": {
+      "Cover-3": 1349,
+      "Cover-2": 620,
+      "Quarters": 577
+     },
+     "etiqueta_sugerida": "Pases rapidos / alta frecuencia"
+    },
+    {
+     "cluster": 1,
+     "n": 2368,
+     "pct": 27.67,
+     "centroide_real": {
+      "down": 2.609,
+      "yardsToGo": 5.353,
+      "yds_to_endzone": 37.739,
+      "score_diff_off": -1.42,
+      "defendersInBox": 6.279,
+      "time_event_s": 2.67,
+      "n_pass_rush": 4.514,
+      "presion": 0.302,
+      "sep_target_arrival_yd": 1.9,
+      "max_speed_off": 7.585,
+      "playResult": 5.886
+     },
+     "centroide_z": {
+      "down": 0.735,
+      "yardsToGo": -0.862,
+      "yds_to_endzone": -0.581,
+      "score_diff_off": 0.19,
+      "defendersInBox": 0.255,
+      "time_event_s": -0.398,
+      "n_pass_rush": 0.401,
+      "presion": -0.152,
+      "sep_target_arrival_yd": -0.65,
+      "max_speed_off": -0.453,
+      "playResult": -0.064
+     },
+     "tasa_explosiva": 0.133,
+     "tasa_sack": 0.031,
+     "tasa_incompleto": 0.372,
+     "cobertura_top": {
+      "Cover-1": 973,
+      "Cover-3": 474,
+      "Red Zone": 251
+     },
+     "etiqueta_sugerida": "Jugadas explosivas / exito grande"
+    },
+    {
+     "cluster": 2,
+     "n": 2522,
+     "pct": 29.47,
+     "centroide_real": {
+      "down": 1.96,
+      "yardsToGo": 9.56,
+      "yds_to_endzone": 54.263,
+      "score_diff_off": -3.962,
+      "defendersInBox": 5.909,
+      "time_event_s": 4.134,
+      "n_pass_rush": 4.226,
+      "presion": 0.955,
+      "sep_target_arrival_yd": 4.208,
+      "max_speed_off": 8.372,
+      "playResult": 3.367
+     },
+     "centroide_z": {
+      "down": -0.008,
+      "yardsToGo": 0.214,
+      "yds_to_endzone": 0.119,
+      "score_diff_off": -0.059,
+      "defendersInBox": -0.113,
+      "time_event_s": 0.859,
+      "n_pass_rush": -0.035,
+      "presion": 1.196,
+      "sep_target_arrival_yd": 0.083,
+      "max_speed_off": 0.468,
+      "playResult": -0.301
+     },
+     "tasa_explosiva": 0.128,
+     "tasa_sack": 0.186,
+     "tasa_incompleto": 0.375,
+     "cobertura_top": {
+      "Cover-3": 842,
+      "Cover-1": 528,
+      "Quarters": 333
+     },
+     "etiqueta_sugerida": "Jugadas bajo presion"
+    }
+   ]
+  },
+  "k4": {
+   "inercia": 72015.2,
+   "varianza_explicada_pct": 23.49,
+   "silhouette_muestra": 0.098,
+   "estabilidad_semillas": 0.995,
+   "clusters": [
+    {
+     "cluster": 0,
+     "n": 1648,
+     "pct": 19.26,
+     "centroide_real": {
+      "down": 1.519,
+      "yardsToGo": 9.556,
+      "yds_to_endzone": 59.619,
+      "score_diff_off": -0.198,
+      "defendersInBox": 6.485,
+      "time_event_s": 3.271,
+      "n_pass_rush": 4.263,
+      "presion": 0.139,
+      "sep_target_arrival_yd": 3.581,
+      "max_speed_off": 8.65,
+      "playResult": 16.93
+     },
+     "centroide_z": {
+      "down": -0.513,
+      "yardsToGo": 0.213,
+      "yds_to_endzone": 0.345,
+      "score_diff_off": 0.31,
+      "defendersInBox": 0.46,
+      "time_event_s": 0.118,
+      "n_pass_rush": 0.02,
+      "presion": -0.489,
+      "sep_target_arrival_yd": -0.079,
+      "max_speed_off": 0.793,
+      "playResult": 0.977
+     },
+     "tasa_explosiva": 0.513,
+     "tasa_sack": 0.0,
+     "tasa_incompleto": 0.192,
+     "cobertura_top": {
+      "Cover-3": 638,
+      "Cover-1": 390,
+      "Cover-2": 195
+     },
+     "etiqueta_sugerida": "Jugadas explosivas / exito grande"
+    },
+    {
+     "cluster": 1,
+     "n": 2154,
+     "pct": 25.17,
+     "centroide_real": {
+      "down": 2.017,
+      "yardsToGo": 9.544,
+      "yds_to_endzone": 53.432,
+      "score_diff_off": -4.207,
+      "defendersInBox": 5.866,
+      "time_event_s": 4.279,
+      "n_pass_rush": 4.2,
+      "presion": 0.962,
+      "sep_target_arrival_yd": 3.869,
+      "max_speed_off": 8.371,
+      "playResult": 1.159
+     },
+     "centroide_z": {
+      "down": 0.057,
+      "yardsToGo": 0.209,
+      "yds_to_endzone": 0.084,
+      "score_diff_off": -0.083,
+      "defendersInBox": -0.155,
+      "time_event_s": 0.983,
+      "n_pass_rush": -0.076,
+      "presion": 1.21,
+      "sep_target_arrival_yd": 0.05,
+      "max_speed_off": 0.467,
+      "playResult": -0.509
+     },
+     "tasa_explosiva": 0.065,
+     "tasa_sack": 0.216,
+     "tasa_incompleto": 0.403,
+     "cobertura_top": {
+      "Cover-3": 709,
+      "Cover-1": 457,
+      "Quarters": 283
+     },
+     "etiqueta_sugerida": "Jugadas bajo presion"
+    },
+    {
+     "cluster": 2,
+     "n": 2625,
+     "pct": 30.68,
+     "centroide_real": {
+      "down": 1.684,
+      "yardsToGo": 10.33,
+      "yds_to_endzone": 57.086,
+      "score_diff_off": -6.478,
+      "defendersInBox": 5.624,
+      "time_event_s": 2.479,
+      "n_pass_rush": 4.061,
+      "presion": 0.078,
+      "sep_target_arrival_yd": 4.708,
+      "max_speed_off": 7.546,
+      "playResult": 5.955
+     },
+     "centroide_z": {
+      "down": -0.324,
+      "yardsToGo": 0.41,
+      "yds_to_endzone": 0.238,
+      "score_diff_off": -0.305,
+      "defendersInBox": -0.396,
+      "time_event_s": -0.562,
+      "n_pass_rush": -0.286,
+      "presion": -0.614,
+      "sep_target_arrival_yd": 0.583,
+      "max_speed_off": -0.498,
+      "playResult": -0.057
+     },
+     "tasa_explosiva": 0.085,
+     "tasa_sack": 0.002,
+     "tasa_incompleto": 0.278,
+     "cobertura_top": {
+      "Cover-3": 903,
+      "Cover-2": 498,
+      "Quarters": 460
+     },
+     "etiqueta_sugerida": "Pases rapidos / alta frecuencia"
+    },
+    {
+     "cluster": 3,
+     "n": 2130,
+     "pct": 24.89,
+     "centroide_real": {
+      "down": 2.611,
+      "yardsToGo": 5.274,
+      "yds_to_endzone": 36.211,
+      "score_diff_off": -1.115,
+      "defendersInBox": 6.313,
+      "time_event_s": 2.676,
+      "n_pass_rush": 4.521,
+      "presion": 0.333,
+      "sep_target_arrival_yd": 1.816,
+      "max_speed_off": 7.569,
+      "playResult": 4.76
+     },
+     "centroide_z": {
+      "down": 0.738,
+      "yardsToGo": -0.882,
+      "yds_to_endzone": -0.645,
+      "score_diff_off": 0.22,
+      "defendersInBox": 0.289,
+      "time_event_s": -0.392,
+      "n_pass_rush": 0.413,
+      "presion": -0.089,
+      "sep_target_arrival_yd": -0.707,
+      "max_speed_off": -0.471,
+      "playResult": -0.17
+     },
+     "tasa_explosiva": 0.099,
+     "tasa_sack": 0.035,
+     "tasa_incompleto": 0.394,
+     "cobertura_top": {
+      "Cover-1": 878,
+      "Cover-3": 415,
+      "Red Zone": 243
+     },
+     "etiqueta_sugerida": "Situacion larga (3ra y largo / campo propio)"
+    }
+   ]
+  }
+ }
+}
