@@ -42,9 +42,10 @@ export default function App() {
   const openPlay = (gameId: number, playId: number) => {
     const play = data.allPlays.find((p) => p.gameId === gameId && p.playId === playId)
     if (play) setSelectedPlay(play)
-    setMode('coach')
-    setView('cruces')
-    setTimeout(() => document.getElementById('reconstructor')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 450)
+    // Se respeta el modo activo: Scout abre su propio reconstructor, Coach abre Cruces
+    if (mode === 'coach') setView('cruces')
+    const target = mode === 'scout' ? 'scout-reconstructor' : 'reconstructor'
+    setTimeout(() => document.getElementById(target)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 500)
   }
 
   const renderContent = () => {
@@ -53,7 +54,7 @@ export default function App() {
       if (data.error) return <ErrorState {...describeError(data.error)} onRetry={data.reload} />
       return <WindowSkeleton />
     }
-    if (mode === 'scout') return <ScoutView research={research} allPlays={data.allPlays} />
+    if (mode === 'scout') return <ScoutView research={research} allPlays={data.allPlays} selectedPlay={selectedPlay} onSelectPlay={setSelectedPlay} />
 
     const props = {
       overview,
@@ -65,7 +66,7 @@ export default function App() {
       onOpenPlay: openPlay,
     }
     if (view === 'cruces') {
-      return <CrucesView {...props} selectedPlay={selectedPlay ?? data.plays[0] ?? null} onSelectPlay={setSelectedPlay} />
+      return <CrucesView {...props} mode={mode} selectedPlay={selectedPlay ?? data.plays[0] ?? null} onSelectPlay={setSelectedPlay} />
     }
     const Window = view.startsWith('off-') ? OFFENSE_WINDOWS[view as OffenseWindow] : DEFENSE_WINDOWS[view as DefenseWindow]
     return <Window {...props} />

@@ -1,11 +1,12 @@
 /** MODO SCOUT · promedios de jugadores y equipos por conferencia · identidad Oro UNAM + Azul UNAM */
 import { useMemo, useState } from 'react'
 import { ColumnChart, RadarCompare } from '../components/charts'
+import FieldReplay from '../components/FieldReplay'
 import { Badge, DataTable, EmptyState, MetricList, Segmented, SectionLabel, SourceNote, WideCard, WindowHeader } from '../components/ui'
 import type { Column } from '../components/ui'
 import { buildScoutPlayers, buildScoutTeams, GROUP_LABEL, mean } from '../lib/derive'
 import { fmt } from '../lib/format'
-import { NFL_TEAMS } from '../lib/nflTeams'
+import { NFL_TEAMS, teamInfo } from '../lib/nflTeams'
 import { COLORS } from '../theme'
 import type { Conference, FeaturedPlay, PositionGroup, ResearchInsightsResponse, ScoutPlayer, ScoutTeam } from '../types/nfl'
 
@@ -124,7 +125,17 @@ function TeamCard({ t, color }: { t: ScoutTeam; color: string }) {
 
 /* ───────────── Vista ───────────── */
 
-export function ScoutView({ research, allPlays }: { research: ResearchInsightsResponse; allPlays: FeaturedPlay[] }) {
+export function ScoutView({
+  research,
+  allPlays,
+  selectedPlay,
+  onSelectPlay,
+}: {
+  research: ResearchInsightsResponse
+  allPlays: FeaturedPlay[]
+  selectedPlay: FeaturedPlay | null
+  onSelectPlay: (p: FeaturedPlay) => void
+}) {
   const [conf, setConf] = useState<ConfFilter>('all')
   const [team, setTeam] = useState('')
   const [group, setGroup] = useState<PositionGroup | ''>('')
@@ -221,6 +232,23 @@ export function ScoutView({ research, allPlays }: { research: ResearchInsightsRe
   ]
 
   const compareReady = entity === 'players' ? pickedPlayers.length === 2 : pickedTeams.length === 2
+
+  // Jugadas del reconstructor: las de los jugadores o equipos elegidos; si no hay, las de los filtros Scout
+  const scope = useMemo(() => {
+    if (entity === 'players' && selPlayers.length) {
+      const list = allPlays.filter((p) => (p.target_nflId !== null && selPlayers.includes(p.target_nflId)) || (p.cov_def_nflId !== null && selPlayers.includes(p.cov_def_nflId)))
+      return { plays: list.length ? list : allPlays, label: list.length ? `Jugadas con ${pickedPlayers.map((p) => p.name).join(' y ')} como objetivo o defensor` : 'Los jugadores elegidos no aparecen en las jugadas destacadas: se muestran todas' }
+    }
+    if (entity === 'teams' && selTeams.length) {
+      return { plays: allPlays.filter((p) => selTeams.includes(p.possessionTeam) || selTeams.includes(p.defensiveTeam)), label: `Jugadas de ${selTeams.join(' y ')}` }
+    }
+    const list = allPlays.filter(
+      (p) =>
+        (!team || p.possessionTeam === team || p.defensiveTeam === team) &&
+        (conf === 'all' || teamInfo(p.possessionTeam)?.conference === conf || teamInfo(p.defensiveTeam)?.conference === conf),
+    )
+    return { plays: list, label: team || conf !== 'all' ? 'Jugadas según los filtros de equipo y conferencia' : 'Todas las jugadas destacadas con tracking' }
+  }, [allPlays, entity, selPlayers, selTeams, pickedPlayers, team, conf])
 
   return (
     <>
@@ -460,6 +488,14 @@ export function ScoutView({ research, allPlays }: { research: ResearchInsightsRe
               />
             )}
           </WideCard>
+        </section>
+
+        {/* Reconstructor 2D con la capa Scout */}
+        <section className="space-y-2">
+          <p className="text-sm text-ink-muted">
+            <span className="font-semibold text-legacy-blue">{scope.label}</span> · {scope.plays.length} jugada(s)
+          </p>
+          <FieldReplay play={selectedPlay} plays={scope.plays} onSelectPlay={onSelectPlay} mode="scout" sectionId="scout-reconstructor" title="Reconstructor 2D · Biomecánica" />
         </section>
       </div>
     </>

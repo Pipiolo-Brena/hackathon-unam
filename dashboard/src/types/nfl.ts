@@ -228,7 +228,7 @@ export interface TrackingFrame {
 export interface PlayTrackingResponse {
   gameId: number
   playId: number
-  field: { length: number; width: number; attack: string }
+  field: { length: number; width: number; attack: TrackingAttack | string }
   play: FeaturedPlay | null
   frames: TrackingFrame[]
 }

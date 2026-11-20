@@ -128,7 +128,7 @@ export default function CopilotPanel({
                     onClick={() => onOpenPlay(m.response!.recommended_play!.gameId, m.response!.recommended_play!.playId)}
                     className="mt-1.5 rounded-md bg-unam-blue px-2.5 py-1 font-semibold text-nfl-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-nfl-blue"
                   >
-                    Ver en Cruces →
+                    Ver en el reconstructor 2D →
                   </button>
                 </div>
               )}

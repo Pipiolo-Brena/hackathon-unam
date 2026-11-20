@@ -108,14 +108,19 @@ export async function fetchPlays(query: PlaysQuery = {}): Promise<FeaturedPlay[]
   return data.plays
 }
 
-/** GET api/plays/{gameId}/{playId}/tracking · frames normalizados (ataque hacia la derecha) */
+/** GET api/plays/{gameId}/{playId}/tracking · frames normalizados (ataque hacia la derecha).
+ *  Lanza ApiError 404 si la jugada no tiene frames, para que la interfaz muestre un estado vacío limpio. */
 export async function fetchPlayTracking(gameId: number, playId: number): Promise<PlayTrackingResponse> {
-  if (USE_MOCK) {
-    await wait(300)
-    const { mockTracking } = await loadMock()
-    return { ...mockTracking, gameId, playId }
+  const res = USE_MOCK
+    ? await (async () => {
+        await wait(300)
+        return { ...(await loadMock()).mockTracking, gameId, playId }
+      })()
+    : await request<PlayTrackingResponse>(`plays/${gameId}/${playId}/tracking`)
+  if (!Array.isArray(res.frames) || res.frames.length === 0) {
+    throw new ApiError('http', 'Esta jugada no tiene frames de tracking.', 404, 'La API devolvió 0 frames.')
   }
-  return request<PlayTrackingResponse>(`plays/${gameId}/${playId}/tracking`)
+  return res
 }
 
 /** POST api/chat · Copiloto (Strands + Amazon Nova). El backend responde con un respaldo local si Bedrock falla. */

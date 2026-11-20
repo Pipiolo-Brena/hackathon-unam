@@ -54,6 +54,7 @@ export const SCOUT_SECTIONS = [
   { id: 'scout-conferencias', label: 'AFC vs. NFC' },
   { id: 'scout-tabla', label: 'Tabla de jugadores y equipos' },
   { id: 'scout-comparador', label: 'Comparador' },
+  { id: 'scout-reconstructor', label: 'Reconstructor 2D' },
 ] as const
 
 export function sectionOf(id: WindowId): NavSection {

@@ -1,13 +1,11 @@
 /** Ventana CRUCES (Ofensiva vs. Defensiva) · identidad Oro UNAM + Azul UNAM */
 import { ColumnChart, ScatterPlot } from '../components/charts'
-import { FootballLoader, Goalpost } from '../components/NflMotifs'
-import { Badge, EmptyState, ErrorState, Insight, KpiStrip, MetricList, SectionLabel, SourceNote, WideCard, WindowHeader } from '../components/ui'
-import { useAsync } from '../hooks/useAsync'
+import FieldReplay from '../components/FieldReplay'
+import { EmptyState, Insight, KpiStrip, MetricList, SectionLabel, SourceNote, WideCard, WindowHeader } from '../components/ui'
 import { crossMatrix, ruleRows } from '../lib/derive'
-import { fmt, FORMATION_LABEL, PASS_RESULT_LABEL, TAG_LABEL } from '../lib/format'
-import { describeError, fetchPlayTracking } from '../services/api'
+import { fmt, FORMATION_LABEL } from '../lib/format'
 import { COLORS } from '../theme'
-import type { FeaturedPlay, TrackingEntity } from '../types/nfl'
+import type { AppMode, FeaturedPlay } from '../types/nfl'
 import { pctFormat, shortCluster } from './common'
 import type { ViewProps } from './common'
 
@@ -60,137 +58,6 @@ function Heatmap({ plays }: { plays: FeaturedPlay[] }) {
   )
 }
 
-/* ───────────── Reconstructor 2D (contenedor reservado) ───────────── */
-
-function SnapPreview({ entities, possession }: { entities: TrackingEntity[]; possession: string }) {
-  return (
-    <svg viewBox="0 0 120 53.3" className="h-full w-full" role="img" aria-label="Posiciones al snap">
-      {entities.map((e, i) => {
-        const ball = e.nflId === null
-        const offense = e.team === possession
-        return (
-          <circle
-            key={`${e.nflId ?? 'ball'}-${i}`}
-            cx={e.x}
-            cy={53.3 - e.y}
-            r={ball ? 0.7 : 1.1}
-            fill={ball ? '#7A4A1E' : offense ? COLORS.impactBlue : COLORS.nflRed}
-            stroke={COLORS.white}
-            strokeWidth={0.25}
-          >
-            <title>{ball ? 'Balón' : `${e.displayName} (#${e.jerseyNumber ?? '–'}) · ${e.pff_role ?? ''}`}</title>
-          </circle>
-        )
-      })}
-    </svg>
-  )
-}
-
-function Reconstructor({ play, plays, onSelect }: { play: FeaturedPlay | null; plays: FeaturedPlay[]; onSelect: (p: FeaturedPlay) => void }) {
-  const key = play ? `${play.gameId}-${play.playId}` : 'none'
-  const tracking = useAsync(() => fetchPlayTracking(play!.gameId, play!.playId), key, Boolean(play))
-  const snap = tracking.data?.frames.find((f) => f.frameId === play?.snap_frame) ?? tracking.data?.frames[0]
-  const events = tracking.data?.frames.filter((f) => f.event).map((f) => `${f.event} (${f.frameId})`) ?? []
-  // La jugada puede venir del Copiloto aunque no esté en la selección filtrada
-  const options = play && !plays.some((p) => p.gameId === play.gameId && p.playId === play.playId) ? [play, ...plays] : plays
-  return (
-    <section id="reconstructor" className="scroll-mt-40 rounded-2xl border-2 border-dashed border-unam-gold bg-nfl-white p-5 shadow-gold">
-      <header className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <Goalpost size={30} />
-          <div>
-            <h3 className="font-display text-2xl font-bold uppercase leading-none tracking-wide text-unam-blue">Reconstructor 2D de jugadas</h3>
-            <p className="text-xs text-ink-muted">GET api/plays/{'{gameId}'}/{'{playId}'}/tracking · contenedor reservado para la siguiente fase</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Badge>Próximo paso</Badge>
-          <select
-            aria-label="Jugada a reconstruir"
-            value={play ? `${play.gameId}-${play.playId}` : ''}
-            onChange={(e) => {
-              const p = options.find((x) => `${x.gameId}-${x.playId}` === e.target.value)
-              if (p) onSelect(p)
-            }}
-            className="h-9 max-w-[320px] rounded-lg border border-field-line bg-nfl-white px-2 text-sm text-legacy-blue focus:border-unam-gold focus:outline-none"
-          >
-            {!play && <option value="">Elige una jugada…</option>}
-            {options.map((p) => (
-              <option key={`${p.gameId}-${p.playId}`} value={`${p.gameId}-${p.playId}`}>
-                S{p.week} {p.possessionTeam} vs {p.defensiveTeam} · {PASS_RESULT_LABEL[p.passResult]} {p.playResult} yd
-              </option>
-            ))}
-          </select>
-        </div>
-      </header>
-
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.8fr)_minmax(260px,1fr)]">
-        <div className="relative aspect-[120/53.3] w-full overflow-hidden rounded-xl border border-unam-blue/30 bg-[#EAF4EC]">
-          <svg viewBox="0 0 120 53.3" className="absolute inset-0 h-full w-full" preserveAspectRatio="none" aria-hidden="true">
-            <rect x="0" y="0" width="10" height="53.3" fill={COLORS.nflBlue} opacity={0.12} />
-            <rect x="110" y="0" width="10" height="53.3" fill={GOLD} opacity={0.2} />
-            {Array.from({ length: 11 }, (_, i) => (
-              <line key={i} x1={10 + i * 10} x2={10 + i * 10} y1="0" y2="53.3" stroke="#FFFFFF" strokeWidth={0.35} />
-            ))}
-          </svg>
-          {play && snap ? (
-            <div className="absolute inset-0 animate-fade-up">
-              <SnapPreview entities={snap.entities} possession={play.possessionTeam} />
-            </div>
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              {tracking.loading ? (
-                <FootballLoader label="Cargando tracking…" />
-              ) : tracking.error ? (
-                <ErrorState {...describeError(tracking.error)} onRetry={tracking.reload} />
-              ) : (
-                <p className="font-display text-xl font-bold uppercase text-unam-blue/60">Selecciona una jugada</p>
-              )}
-            </div>
-          )}
-          <span className="absolute bottom-2 left-2 rounded bg-nfl-white/85 px-2 py-0.5 text-[10px] font-semibold text-legacy-blue">
-            Vista previa estática del snap · ataque →
-          </span>
-        </div>
-
-        <aside className="rounded-xl bg-field-mist p-4">
-          {play ? (
-            <>
-              <p className="text-[11px] font-bold uppercase tracking-wider text-ink-muted">
-                S{play.week} · Q{play.quarter} · {play.down}.º y {play.yardsToGo}
-              </p>
-              <p className="mt-1 text-sm leading-snug text-legacy-blue">{play.playDescription}</p>
-              <div className="mt-3">
-                <MetricList
-                  items={[
-                    { label: 'Separación', value: play.sep_target_arrival_yd === null ? '–' : `${play.sep_target_arrival_yd.toFixed(2)} yd`, hint: play.target_name ?? undefined },
-                    { label: 'SOE', value: fmt.signed(play.SOE, 2), hint: 'yd sobre lo esperado' },
-                    { label: 'Quiebre', value: play.hip_flip_deg === null ? '–' : `${play.hip_flip_deg.toFixed(0)}°`, hint: play.cov_def_name ?? undefined },
-                    { label: 'T. lanzar', value: play.time_to_throw_s === null ? '–' : `${play.time_to_throw_s.toFixed(1)} s` },
-                  ]}
-                />
-              </div>
-              <div className="mt-3 flex flex-wrap gap-1">
-                <Badge tone="neutral">{shortCluster(play.cluster_label)}</Badge>
-                {play.tags.map((t) => (
-                  <Badge key={t}>{TAG_LABEL[t]}</Badge>
-                ))}
-              </div>
-              {tracking.data && (
-                <p className="mt-3 text-[11px] text-ink-muted">
-                  {tracking.data.frames.length} frames · {snap?.entities.length ?? 0} entidades · eventos: {events.join(', ') || '–'}
-                </p>
-              )}
-            </>
-          ) : (
-            <EmptyState title="Sin jugada seleccionada" detail="Usa «Ver 2D» en cualquier tabla o la recomendación del Copiloto." />
-          )}
-        </aside>
-      </div>
-    </section>
-  )
-}
-
 /* ───────────── Ventana ───────────── */
 
 export function CrucesView({
@@ -199,7 +66,8 @@ export function CrucesView({
   plays,
   selectedPlay,
   onSelectPlay,
-}: ViewProps & { selectedPlay: FeaturedPlay | null; onSelectPlay: (p: FeaturedPlay) => void }) {
+  mode,
+}: ViewProps & { selectedPlay: FeaturedPlay | null; onSelectPlay: (p: FeaturedPlay) => void; mode: AppMode }) {
   const pa = overview.reglas_play_action['1']
   const noPa = overview.reglas_play_action['0']
   const longPocket = overview.reglas_tiempo_bolsa['>4']
@@ -344,7 +212,7 @@ export function CrucesView({
           />
         </WideCard>
 
-        <Reconstructor play={selectedPlay} plays={plays} onSelect={onSelectPlay} />
+        <FieldReplay play={selectedPlay} plays={plays} onSelectPlay={onSelectPlay} mode={mode} sectionId="reconstructor" />
       </div>
     </>
   )
