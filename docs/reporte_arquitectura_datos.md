@@ -1,6 +1,6 @@
 # Reporte de arquitectura de datos
 
-Generado por `scripts/01_analisis_y_clustering.py`. 122 juegos, semanas 1-8, 8557 jugadas de pase. Solo pandas y numpy.
+Generado por `scripts/01_analisis_y_clustering.py` en 39 s. 122 juegos, semanas 1-8, 8557 jugadas de pase. Solo pandas y numpy.
 
 ## 1. Relaciones de llaves
 
@@ -45,11 +45,17 @@ Estructurales: filas del balon sin nflId/o/dir/jerseyNumber (361486 filas); cast
 | personnelD | 1 | 0.01 |
 | dropBackType | 528 | 6.17 |
 
-## 3. Normalizacion
+## 3. Normalizacion, llegada y receptor objetivo
 
 left=4431, right=4126. Ofensiva a la izquierda de la defensa al snap tras normalizar: 100.0%.
 
-Fuente del frame de llegada: penultimate_frame=8139, pass_arrived=367, pass_outcome_caught=12, pass_outcome_incomplete=39. El tracking de este dataset termina poco despues del pase, por eso la mayoria usa el penultimo frame.
+El tracking termina 5 frames (mediana) despues del lanzamiento (100.0% de los pases con 5 frames o menos): el balon casi nunca llega al receptor dentro de los datos.
+
+Fuente del frame de llegada: cruce_extrapolado=7095, pass_arrived=367, cruce_observado=95, ball_min_speed=35, sin_lanzamiento=953, pass_outcome_caught=12.
+
+Fuente del receptor objetivo: descripcion=7035, trayectoria=569. Cuando hay nombre en la descripcion, la trayectoria del balon elige al mismo receptor en 91.98% de los casos (6471/7035).
+
+Extrapolacion en cruce_extrapolado: mediana 0.46 s, p90 1.30 s, 0.59% topado en 2.5 s.
 
 ## 4. KPIs
 
@@ -64,40 +70,83 @@ Fuente del frame de llegada: penultimate_frame=8139, pass_arrived=367, pass_outc
 - tasa_sack: 0.0635
 - tasa_intercepcion: 0.0222
 - tiempo_lanzar_promedio_s: 2.9058
-- sep_objetivo_promedio_yd: 3.6999
-- hip_flip_promedio_deg: 136.7277
-- tasa_trampa_presion: 0.1122
-- cobertura_sep_objetivo: 8557
-- cobertura_hip_flip: 8554
+- sep_objetivo_promedio_yd: 3.5635
+- hip_flip_promedio_deg: 142.9863
+- tasa_trampa_presion: 0.0695
+- pases_con_objetivo: 7604
+- cobertura_hip_flip: 7603
+- pct_objetivo_por_descripcion: 92.52
 
 ## 5. Metricas ineditas
 
-- **sep_target_arrival_yd**: n=8557, media=3.700, p25=1.611, mediana=3.073, p75=5.153, max=22.245
-- **SOE**: n=8557, media=-0.000, p25=-1.728, mediana=-0.514, p75=1.321, max=18.135
-- **hip_flip_deg**: n=8554, media=136.728, p25=105.300, mediana=148.045, p75=175.438, max=180.000
-- hip_flip_deg >= 170: 35.67% de las jugadas medidas.
+- **sep_target_arrival_yd**: n=7604, media=3.563, p25=1.545, mediana=2.862, p75=4.861, max=25.015
+- **SOE**: n=7604, media=-0.000, p25=-1.786, mediana=-0.609, p75=1.158, max=20.190
+- **hip_flip_deg**: n=7603, media=142.986, p25=116.305, mediana=158.900, p75=176.515, max=180.000
+- **dist_ball_target_yd**: n=7604, media=1.352, p25=0.260, mediana=0.617, p75=1.423, max=33.552
+- sep_target_arrival_yd > 12 yd: 0.97% de los pases.
+- hip_flip_deg base Man 134.7° vs Zone 147.4°.
 
-**Trampa de Presion**: 960 jugadas (11.22% del total, 29.85% de las jugadas con presion). Yardas promedio -0.47, faltaron 10.11 yd para el primer down. Resultado: {'I': 389, 'C': 282, 'S': 200, 'R': 54, 'IN': 35}.
+**Trampa de Presion**: 595 jugadas (18.5% de las jugadas con presion, 24.21% de los pases lanzados bajo presion). Yardas promedio 1.29, faltaron 8.47 yd. Completos: 264 (3.67 yd). Resultado: {'I': 296, 'C': 264, 'IN': 24, 'S': 9, 'R': 2}.
 
-**Top 5 receptores por SOE**
+**Top SOE WR/TE (min 15 targets)**
 
-| Jugador | Pos | Equipo | n | SOE | sep obj |
-|---|---|---|---|---|---|
-| Javonte Williams | RB | DEN | 34 | 2.332 | 6.251 |
-| Ty Johnson | RB | NYJ | 47 | 2.04 | 5.718 |
-| Darrell Henderson | RB | LA | 41 | 1.826 | 5.761 |
-| Dawson Knox | TE | BUF | 36 | 1.676 | 5.175 |
-| Darrel Williams | RB | KC | 55 | 1.573 | 5.436 |
+| Jugador | Pos | Equipo | n | valor | sep obj | SOE | hip flip |
+|---|---|---|---|---|---|---|---|
+| Rondale Moore | WR | ARI | 16 | 3.125 | 6.701 | 3.125 | 129.325 |
+| Braxton Berrios | WR | NYJ | 21 | 1.261 | 4.81 | 1.261 | 136.536 |
+| Freddie Swain | WR | SEA | 20 | 1.117 | 4.645 | 1.117 | 151.092 |
+| Hayden Hurst | TE | ATL | 22 | 0.864 | 4.664 | 0.864 | 128.955 |
+| Jonnu Smith | TE | NE | 25 | 0.828 | 4.372 | 0.828 | 132.325 |
+| Noah Fant | TE | DEN | 52 | 0.782 | 4.339 | 0.782 | 135.519 |
+| Elijah Moore | WR | NYJ | 30 | 0.774 | 4.183 | 0.774 | 144.719 |
+| Maxx Williams | TE | ARI | 16 | 0.598 | 4.636 | 0.598 | 157.218 |
+| Dallas Goedert | TE | PHI | 29 | 0.585 | 4.159 | 0.585 | 159.89 |
+| Dawson Knox | TE | BUF | 24 | 0.577 | 4.2 | 0.577 | 137.418 |
 
-**Top 5 defensores por hip_flip_deg**
+**Top SOE RB/FB (min 15 targets)**
 
-| Jugador | Pos | Equipo | n | hip flip | sep permitida |
-|---|---|---|---|---|---|
-| Mike Hilton | CB | CIN | 56 | 159.924 | 3.641 |
-| Taron Johnson | CB | BUF | 42 | 157.192 | 3.537 |
-| Denzel Perryman | ILB | LV | 43 | 156.698 | 3.306 |
-| Kyle Van Noy | OLB | NE | 30 | 156.37 | 3.583 |
-| Chauncey Gardner-Johnson | SS | NO | 31 | 154.444 | 3.448 |
+| Jugador | Pos | Equipo | n | valor | sep obj | SOE | hip flip |
+|---|---|---|---|---|---|---|---|
+| Darrel Williams | RB | KC | 27 | 3.134 | 6.929 | 3.134 | 142.635 |
+| Ty Johnson | RB | NYJ | 24 | 2.783 | 6.386 | 2.783 | 150.512 |
+| Javonte Williams | RB | DEN | 19 | 2.277 | 6.068 | 2.277 | 141.66 |
+| Devin Singletary | RB | BUF | 16 | 2.275 | 6.059 | 2.275 | 139.554 |
+| Kenyan Drake | RB | LV | 24 | 1.940 | 5.423 | 1.94 | 125.39 |
+| Kenneth Gainwell | RB | PHI | 27 | 1.852 | 5.487 | 1.852 | 127.203 |
+| Aaron Jones | RB | GB | 24 | 1.833 | 5.144 | 1.833 | 136.788 |
+| Joe Mixon | RB | CIN | 15 | 1.832 | 5.33 | 1.832 | 128.361 |
+| Michael Carter | RB | NYJ | 30 | 1.817 | 5.548 | 1.817 | 139.836 |
+| Darrell Henderson | RB | LA | 19 | 1.783 | 5.407 | 1.783 | 127.299 |
+
+**Top hip_flip defensores, solo cobertura Man (min 15)**
+
+| Jugador | Pos | Equipo | n | valor | sep obj | SOE | hip flip |
+|---|---|---|---|---|---|---|---|
+| Anthony Averett | CB | BAL | 30 | 160.9 | 2.192 | -0.517 | 160.882 |
+| Kendall Fuller | CB | WAS | 17 | 159.5 | 1.677 | -0.984 | 159.47 |
+| Anthony Brown | CB | DAL | 21 | 158.3 | 2.392 | -0.239 | 158.251 |
+| Mike Hughes | CB | KC | 16 | 158.0 | 2.044 | -0.586 | 157.973 |
+| Janoris Jenkins | CB | TEN | 21 | 154.9 | 2.096 | -0.47 | 154.887 |
+| Bryce Callahan | CB | DEN | 16 | 153.8 | 2.475 | -0.047 | 153.756 |
+| J.C. Jackson | CB | NE | 36 | 153.6 | 2.77 | 0.13 | 153.577 |
+| Jonathan Jones | CB | NE | 17 | 152.3 | 3.088 | 0.431 | 152.285 |
+| Kristian Fulton | CB | TEN | 20 | 152.1 | 2.801 | 0.219 | 152.145 |
+| William Jackson | CB | WAS | 15 | 151.7 | 2.351 | -0.242 | 151.743 |
+
+**Top hip_flip inducido por WR/TE, solo Man (min 15)**
+
+| Jugador | Pos | Equipo | n | valor | sep obj | SOE | hip flip |
+|---|---|---|---|---|---|---|---|
+| Corey Davis | WR | NYJ | 18 | 164.3 | 2.501 | -0.081 | 164.259 |
+| DeVante Parker | WR | MIA | 15 | 162.2 | 1.459 | -1.234 | 162.221 |
+| DeVonta Smith | WR | PHI | 16 | 159.0 | 1.979 | -0.656 | 159.034 |
+| Amari Cooper | WR | DAL | 24 | 158.1 | 1.842 | -0.738 | 158.088 |
+| Brandin Cooks | WR | HOU | 19 | 156.3 | 2.148 | -0.513 | 156.269 |
+| Mike Williams | WR | LAC | 16 | 155.8 | 1.563 | -1.091 | 155.756 |
+| A.J. Brown | WR | TEN | 24 | 155.4 | 2.407 | -0.224 | 155.414 |
+| Stefon Diggs | WR | BUF | 26 | 154.2 | 2.562 | -0.044 | 154.172 |
+| Marquez Callaway | WR | NO | 17 | 153.1 | 2.241 | -0.356 | 153.098 |
+| DK Metcalf | WR | SEA | 15 | 151.6 | 1.653 | -0.99 | 151.601 |
 
 ## 6. Reglas
 
@@ -105,82 +154,90 @@ Fuente del frame de llegada: penultimate_frame=8139, pass_arrived=367, pass_outc
 
 | Grupo | n | yds | explosiva | presion | t lanzar | sep obj | SOE | hip flip | trampa |
 |---|---|---|---|---|---|---|---|---|---|
-| 2-Man | 200 | 7.93 | 0.245 | 0.405 | 3.142 | 2.392 | -0.0 | 122.027 | 0.05 |
-| Cover-0 | 270 | 5.037 | 0.119 | 0.511 | 2.453 | 2.744 | 0.0 | 118.719 | 0.126 |
-| Cover-1 | 2011 | 6.655 | 0.182 | 0.404 | 2.815 | 2.563 | 0.0 | 123.298 | 0.061 |
-| Cover-2 | 1085 | 6.509 | 0.166 | 0.341 | 2.98 | 5.075 | -0.0 | 153.067 | 0.16 |
-| Cover-3 | 2665 | 6.904 | 0.175 | 0.363 | 2.917 | 4.155 | -0.0 | 140.404 | 0.131 |
-| Cover-6 | 805 | 6.875 | 0.18 | 0.34 | 2.951 | 4.067 | -0.0 | 144.469 | 0.122 |
-| Quarters | 1033 | 7.041 | 0.156 | 0.356 | 2.907 | 3.911 | -0.0 | 140.804 | 0.129 |
-| Red Zone | 376 | 2.298 | 0.003 | 0.428 | 3.102 | 2.809 | -0.0 | 131.004 | 0.088 |
+| 2-Man | 200 | 7.93 | 0.245 | 0.405 | 3.142 | 2.882 | 0.0 | 134.467 | 0.04 |
+| Cover-0 | 270 | 5.037 | 0.119 | 0.511 | 2.453 | 2.893 | -0.0 | 126.116 | 0.078 |
+| Cover-1 | 2011 | 6.655 | 0.182 | 0.404 | 2.815 | 2.58 | 0.0 | 135.894 | 0.034 |
+| Cover-2 | 1085 | 6.509 | 0.166 | 0.341 | 2.98 | 4.734 | 0.0 | 153.905 | 0.103 |
+| Cover-3 | 2665 | 6.904 | 0.175 | 0.363 | 2.917 | 3.932 | -0.0 | 144.631 | 0.08 |
+| Cover-6 | 805 | 6.875 | 0.18 | 0.34 | 2.951 | 3.952 | -0.0 | 150.773 | 0.092 |
+| Quarters | 1033 | 7.041 | 0.156 | 0.356 | 2.907 | 3.642 | 0.0 | 145.105 | 0.076 |
+| Red Zone | 376 | 2.298 | 0.003 | 0.428 | 3.102 | 2.731 | 0.0 | 132.55 | 0.037 |
+
+**por_tipo_cobertura**
+
+| Grupo | n | yds | explosiva | presion | t lanzar | sep obj | SOE | hip flip | trampa |
+|---|---|---|---|---|---|---|---|---|---|
+| Man | 2481 | 6.582 | 0.181 | 0.416 | 2.798 | 2.638 | 0.0 | 134.666 | 0.04 |
+| Other | 488 | 3.219 | 0.039 | 0.42 | 3.154 | 2.725 | 0.0 | 133.414 | 0.039 |
+| Zone | 5588 | 6.848 | 0.17 | 0.354 | 2.932 | 4.039 | -0.0 | 147.428 | 0.086 |
 
 **por_formacion**
 
 | Grupo | n | yds | explosiva | presion | t lanzar | sep obj | SOE | hip flip | trampa |
 |---|---|---|---|---|---|---|---|---|---|
-| EMPTY | 1396 | 6.55 | 0.143 | 0.357 | 2.692 | 3.25 | -0.406 | 140.133 | 0.072 |
-| I_FORM | 298 | 7.359 | 0.225 | 0.339 | 3.13 | 4.018 | 0.2 | 129.458 | 0.107 |
-| PISTOL | 154 | 7.123 | 0.156 | 0.312 | 3.042 | 4.366 | 0.496 | 143.077 | 0.117 |
-| SHOTGUN | 5481 | 6.276 | 0.157 | 0.386 | 2.873 | 3.701 | 0.021 | 137.03 | 0.122 |
-| SINGLEBACK | 1189 | 7.741 | 0.224 | 0.364 | 3.23 | 4.099 | 0.274 | 132.926 | 0.118 |
+| EMPTY | 1396 | 6.55 | 0.143 | 0.357 | 2.692 | 3.317 | -0.209 | 143.879 | 0.054 |
+| I_FORM | 298 | 7.359 | 0.225 | 0.339 | 3.13 | 3.966 | 0.305 | 138.004 | 0.054 |
+| PISTOL | 154 | 7.123 | 0.156 | 0.312 | 3.042 | 4.182 | 0.522 | 144.066 | 0.065 |
+| SHOTGUN | 5481 | 6.276 | 0.157 | 0.386 | 2.873 | 3.501 | -0.048 | 144.262 | 0.074 |
+| SINGLEBACK | 1189 | 7.741 | 0.224 | 0.364 | 3.23 | 3.979 | 0.318 | 138.095 | 0.073 |
 
 **por_play_action**
 
 | Grupo | n | yds | explosiva | presion | t lanzar | sep obj | SOE | hip flip | trampa |
 |---|---|---|---|---|---|---|---|---|---|
-| 0 | 6519 | 6.169 | 0.144 | 0.372 | 2.775 | 3.582 | -0.078 | 137.208 | 0.109 |
-| 1 | 2038 | 7.828 | 0.236 | 0.388 | 3.33 | 4.077 | 0.25 | 135.19 | 0.122 |
+| 0 | 6519 | 6.169 | 0.144 | 0.372 | 2.775 | 3.423 | -0.108 | 143.974 | 0.067 |
+| 1 | 2038 | 7.828 | 0.236 | 0.388 | 3.33 | 4.017 | 0.349 | 139.787 | 0.076 |
 
 **por_tiempo_bolsa**
 
 | Grupo | n | yds | explosiva | presion | t lanzar | sep obj | SOE | hip flip | trampa |
 |---|---|---|---|---|---|---|---|---|---|
-| <=2.0 | 1285 | 6.01 | 0.073 | 0.12 | 1.813 | 3.315 | -0.352 | 124.739 | 0.031 |
-| 2-2.5 | 1927 | 7.031 | 0.153 | 0.228 | 2.316 | 3.493 | -0.138 | 134.463 | 0.062 |
-| 2.5-3 | 1822 | 7.797 | 0.201 | 0.32 | 2.788 | 3.995 | 0.292 | 134.495 | 0.107 |
-| 3-4 | 1754 | 8.877 | 0.254 | 0.397 | 3.44 | 4.345 | 0.535 | 140.693 | 0.131 |
-| >4 | 816 | 6.495 | 0.19 | 0.716 | 5.135 | 3.442 | -0.32 | 149.202 | 0.164 |
+| <=2.0 | 1285 | 6.01 | 0.073 | 0.12 | 1.813 | 3.324 | -0.201 | 130.879 | 0.025 |
+| 2-2.5 | 1927 | 7.031 | 0.153 | 0.228 | 2.316 | 3.284 | -0.219 | 142.241 | 0.043 |
+| 2.5-3 | 1822 | 7.797 | 0.201 | 0.32 | 2.788 | 3.658 | 0.097 | 142.629 | 0.081 |
+| 3-4 | 1754 | 8.877 | 0.254 | 0.397 | 3.44 | 4.026 | 0.374 | 147.266 | 0.113 |
+| >4 | 816 | 6.495 | 0.19 | 0.716 | 5.135 | 3.396 | -0.189 | 155.425 | 0.165 |
 
 **por_zona_campo**
 
 | Grupo | n | yds | explosiva | presion | t lanzar | sep obj | SOE | hip flip | trampa |
 |---|---|---|---|---|---|---|---|---|---|
-| Ataque (21-40) | 1560 | 6.178 | 0.183 | 0.378 | 2.875 | 3.592 | 0.0 | 136.27 | 0.108 |
-| Campo Propio (61+) | 3613 | 7.301 | 0.182 | 0.364 | 2.904 | 3.898 | -0.0 | 138.008 | 0.121 |
-| Medio Campo (41-60) | 2202 | 7.399 | 0.19 | 0.384 | 2.943 | 3.897 | 0.0 | 137.508 | 0.122 |
-| Zona Roja (<=20) | 1182 | 3.266 | 0.049 | 0.393 | 2.882 | 2.868 | -0.0 | 131.966 | 0.073 |
+| Ataque (21-40) | 1560 | 6.178 | 0.183 | 0.378 | 2.875 | 3.523 | -0.0 | 143.518 | 0.07 |
+| Campo Propio (61+) | 3613 | 7.301 | 0.182 | 0.364 | 2.904 | 3.674 | -0.0 | 143.959 | 0.071 |
+| Medio Campo (41-60) | 2202 | 7.399 | 0.19 | 0.384 | 2.943 | 3.778 | -0.0 | 144.067 | 0.078 |
+| Zona Roja (<=20) | 1182 | 3.266 | 0.049 | 0.393 | 2.882 | 2.875 | -0.0 | 137.249 | 0.05 |
 
 **presion_vs_no**
 
 | Grupo | n | yds | explosiva | presion | t lanzar | sep obj | SOE | hip flip | trampa |
 |---|---|---|---|---|---|---|---|---|---|
-| 0 | 5341 | 8.147 | 0.186 | 0.0 | 2.654 | 3.77 | 0.03 | 135.013 | 0.0 |
-| 1 | 3216 | 3.935 | 0.132 | 1.0 | 3.433 | 3.584 | -0.05 | 139.574 | 0.299 |
+| 0 | 5341 | 8.147 | 0.186 | 0.0 | 2.654 | 3.603 | 0.013 | 142.117 | 0.0 |
+| 1 | 3216 | 3.935 | 0.132 | 1.0 | 3.433 | 3.481 | -0.027 | 144.807 | 0.185 |
 
-Correlaciones con playResult: time_to_throw_s=0.015, presion=-0.192, sep_target_arrival_yd=0.044, SOE=0.032, hip_flip_deg=0.018, max_speed_off=0.131, yardsToGo=0.038, yds_to_endzone=0.116
+Correlaciones con playResult: time_to_throw_s=0.015, presion=-0.192, sep_target_arrival_yd=0.197, SOE=0.192, hip_flip_deg=0.063, max_speed_off=0.131, yardsToGo=0.038, yds_to_endzone=0.116
 
 ## 7. Clustering K-Means (numpy, Z-score)
 
 Variables: down, yardsToGo, yds_to_endzone, score_diff_off, defendersInBox, time_event_s, n_pass_rush, presion, sep_target_arrival_yd, max_speed_off, playResult. Etiqueta: si centroide yds_to_endzone <= 40 -> 'Zona Roja / Compresión de Campo'; resto por rasgo z dominante.
 
-### k3: varianza explicada 18.53%, silhouette 0.111, estabilidad 0.996
+### k3: varianza explicada 18.45%, silhouette 0.111, estabilidad 0.987
 
 | Cluster | Etiqueta | n | % | down | yardsToGo | yds_to_endzone | score_diff_off | defendersInBox | time_event_s | n_pass_rush | presion | sep_target_arrival_yd | max_speed_off | playResult | explosiva | sack | SOE | trampa |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 0 | Zona Roja / Compresión de Campo | 2483 | 29.02 | 2.556 | 5.516 | 37.53 | -1.791 | 6.236 | 2.535 | 4.51 | 0.269 | 2.668 | 7.531 | 5.687 | 0.124 | 0.024 | -0.566 | 0.040 |
-| 1 | Bolsa Limpia / Jugadas Explosivas | 3514 | 41.07 | 1.539 | 10.482 | 59.422 | -4.108 | 5.95 | 2.759 | 4.077 | 0.028 | 4.424 | 8.005 | 9.798 | 0.231 | 0.000 | 0.430 | 0.008 |
-| 2 | Bolsa Colapsada (Bajo Presión) | 2560 | 29.92 | 1.982 | 9.424 | 54.036 | -3.861 | 5.915 | 4.104 | 4.233 | 0.957 | 3.706 | 8.354 | 2.975 | 0.117 | 0.189 | -0.041 | 0.325 |
+| 0 | Bolsa Limpia / Jugadas Explosivas | 3574 | 41.77 | 1.532 | 10.497 | 59.38 | -4.012 | 5.956 | 2.758 | 4.096 | 0.05 | 4.292 | 8.008 | 10.249 | 0.245 | 0.000 | 0.503 | 0.015 |
+| 1 | Zona Roja / Compresión de Campo | 2503 | 29.25 | 2.565 | 5.537 | 38.047 | -1.836 | 6.223 | 2.526 | 4.489 | 0.271 | 2.616 | 7.528 | 5.32 | 0.111 | 0.024 | -0.597 | 0.026 |
+| 2 | Bolsa Colapsada (Bajo Presión) | 2480 | 28.98 | 1.988 | 9.387 | 53.577 | -3.965 | 5.916 | 4.161 | 4.228 | 0.952 | 3.401 | 8.368 | 2.509 | 0.106 | 0.195 | -0.191 | 0.192 |
 
-### k4: varianza explicada 22.87%, silhouette 0.099, estabilidad 0.743
+### k4: varianza explicada 23.19%, silhouette 0.098, estabilidad 0.744
 
 | Cluster | Etiqueta | n | % | down | yardsToGo | yds_to_endzone | score_diff_off | defendersInBox | time_event_s | n_pass_rush | presion | sep_target_arrival_yd | max_speed_off | playResult | explosiva | sack | SOE | trampa |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 0 | Bolsa Colapsada (Bajo Presión) | 2205 | 25.77 | 2.029 | 9.295 | 53.08 | -4.364 | 5.835 | 4.287 | 4.098 | 0.949 | 3.607 | 8.358 | 2.082 | 0.096 | 0.205 | -0.155 | 0.323 |
-| 1 | Bolsa Limpia / Jugadas Explosivas | 2889 | 33.76 | 1.466 | 10.833 | 61.893 | -3.925 | 5.986 | 2.834 | 4.056 | 0.06 | 4.796 | 8.136 | 10.571 | 0.258 | 0.000 | 0.731 | 0.020 |
-| 2 | Zona Roja / Compresión de Campo | 2151 | 25.14 | 2.442 | 6.283 | 39.576 | -3.789 | 5.803 | 2.5 | 4.0 | 0.121 | 2.836 | 7.449 | 5.745 | 0.106 | 0.010 | -0.606 | 0.020 |
-| 3 | Blitz / Caja Cargada | 1312 | 15.33 | 2.184 | 7.124 | 45.235 | 0.265 | 6.777 | 2.651 | 5.338 | 0.526 | 2.859 | 7.819 | 6.615 | 0.178 | 0.053 | -0.357 | 0.111 |
+| 0 | Zona Roja / Compresión de Campo | 2104 | 24.59 | 2.628 | 5.161 | 35.717 | -1.737 | 6.311 | 2.578 | 4.584 | 0.326 | 2.509 | 7.582 | 4.997 | 0.105 | 0.030 | -0.643 | 0.034 |
+| 1 | Pase Rápido Seguro | 2739 | 32.01 | 1.574 | 10.403 | 58.432 | -4.935 | 5.852 | 2.522 | 4.052 | 0.05 | 2.911 | 7.66 | 5.65 | 0.088 | 0.001 | -0.803 | 0.011 |
+| 2 | Bolsa Limpia / Jugadas Explosivas | 1515 | 17.7 | 1.687 | 9.697 | 57.457 | -1.677 | 6.12 | 3.125 | 4.228 | 0.238 | 6.794 | 8.485 | 18.349 | 0.538 | 0.001 | 2.970 | 0.073 |
+| 3 | Bolsa Colapsada (Bajo Presión) | 2199 | 25.7 | 2.016 | 9.373 | 53.699 | -4.117 | 5.891 | 4.289 | 4.191 | 0.924 | 2.908 | 8.38 | 1.083 | 0.065 | 0.216 | -0.673 | 0.174 |
 
 ## 8. Exportacion web
 
-- `data/insights_partido.json`: 0.11 MB
-- `data/featured_plays_tracking.json`: 2.39 MB, 60 jugadas (explosiva=15, soe=15, hip_flip=15, trampa_presion=15)
+- `data/insights_partido.json`: 0.12 MB
+- `data/featured_plays_tracking.json`: 2.20 MB, 60 jugadas (trampa_presion=15, explosiva=15, soe=15, hip_flip=15), todas con separacion entre 1.0 y 12.0 yd; trampa_presion = pases completos.

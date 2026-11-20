@@ -26,6 +26,7 @@ from pydantic import BaseModel, Field  # noqa: E402
 
 from backend import data_store as ds  # noqa: E402
 from backend.agent import chat as agent_chat  # noqa: E402
+from backend.agent import hip_flip_eval, man_sep_base  # noqa: E402
 
 app = FastAPI(title="Hackathon NFL UNAM")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET", "POST"], allow_headers=["*"])
@@ -59,7 +60,14 @@ def overview() -> dict:
 @app.get("/api/research-insights")
 def research_insights() -> dict:
     ins = _data(ds.insights)
-    return {"clusters": ins["clusters"]["k4"], "rankings": ins["rankings"],
+    rankings = dict(ins["rankings"])
+    base = man_sep_base()
+    rankings["sep_allowed_base_man_yd"] = round(base, 3)
+    rankings["defensores_hip_flip_man"] = [
+        {**r, "sep_allowed_yd": r.get("sep_objetivo"),
+         "evaluacion_hip_flip": hip_flip_eval(r.get("hip_flip"), r.get("sep_objetivo"), base)}
+        for r in ins["rankings"]["defensores_hip_flip_man"]]
+    return {"clusters": ins["clusters"]["k4"], "rankings": rankings,
             "trampa_presion": ins["trampa_presion"], "metodologia": ins["meta"]}
 
 
@@ -80,7 +88,7 @@ def play_tracking(game_id: int, play_id: int) -> dict:
 
 class ChatIn(BaseModel):
     message: str = Field(min_length=1, max_length=2000)
-    mode: str = Field("coach", pattern="^(coach|broadcast)$")
+    mode: str = Field("coach", pattern="^(coach|scout)$")
 
 
 @app.post("/api/chat")
