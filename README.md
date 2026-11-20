@@ -13,6 +13,8 @@ El análisis se apoya en tres métricas propias y un hallazgo de gestión de bol
 
 ## 2. Arquitectura y Stack Tecnológico
 
+![Arquitectura del Sistema](docs/arquitectura.svg)
+
 | Capa | Tecnología | Qué hace |
 |---|---|---|
 | Pipeline de datos | `pandas` 2.2.3 + `numpy` 2.1.3 (`scripts/01_analisis_y_clustering.py`) | Valida llaves, normaliza el campo, identifica receptor objetivo y llegada del pase, calcula métricas, K-Means en `numpy` y exporta `data/insights_partido.json` y `data/featured_plays_tracking.json` (~37 s) |

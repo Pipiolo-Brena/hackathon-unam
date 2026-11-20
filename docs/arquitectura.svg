@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 340" width="1080" height="340" font-family="Segoe UI, Helvetica, Arial, sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">Arquitectura del Sistema</title>
+  <desc id="d">Pipeline de datos a 10 Hz, API FastAPI, agente Amazon Nova Pro y dashboard React con cancha 2D.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <rect width="1080" height="340" fill="#f8fafc"/>
+  <text x="540" y="38" text-anchor="middle" font-size="20" font-weight="700" fill="#0f172a">Arquitectura del Sistema</text>
+  <text x="540" y="60" text-anchor="middle" font-size="13" fill="#475569">122 partidos · 8,557 jugadas de pase · tracking a 10 Hz + scouting PFF</text>
+
+  <!-- 1. Pipeline -->
+  <g filter="url(#shadow)">
+    <rect x="30" y="90" width="230" height="190" rx="14" fill="#ffffff" stroke="#0ea5e9" stroke-width="2"/>
+    <rect x="30" y="90" width="230" height="44" rx="14" fill="#0ea5e9"/>
+    <rect x="30" y="118" width="230" height="16" fill="#0ea5e9"/>
+  </g>
+  <text x="145" y="118" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">Pipeline 10 Hz</text>
+  <text x="145" y="160" text-anchor="middle" font-size="13" fill="#0f172a">pandas + numpy (vectorizado)</text>
+  <text x="145" y="184" text-anchor="middle" font-size="12" fill="#475569">Normalización del campo</text>
+  <text x="145" y="204" text-anchor="middle" font-size="12" fill="#475569">Objetivo y llegada del pase</text>
+  <text x="145" y="224" text-anchor="middle" font-size="12" fill="#475569">SOE · Quiebre de Cadera · Trampa</text>
+  <text x="145" y="244" text-anchor="middle" font-size="12" fill="#475569">K-Means (k=4)</text>
+  <text x="145" y="268" text-anchor="middle" font-size="11" fill="#0369a1">→ insights + tracking JSON</text>
+
+  <!-- 2. FastAPI -->
+  <g filter="url(#shadow)">
+    <rect x="300" y="90" width="230" height="190" rx="14" fill="#ffffff" stroke="#10b981" stroke-width="2"/>
+    <rect x="300" y="90" width="230" height="44" rx="14" fill="#10b981"/>
+    <rect x="300" y="118" width="230" height="16" fill="#10b981"/>
+  </g>
+  <text x="415" y="118" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">FastAPI</text>
+  <text x="415" y="160" text-anchor="middle" font-size="13" fill="#0f172a">JSON en memoria</text>
+  <text x="415" y="184" text-anchor="middle" font-size="12" fill="#475569">api/overview</text>
+  <text x="415" y="204" text-anchor="middle" font-size="12" fill="#475569">api/research-insights</text>
+  <text x="415" y="224" text-anchor="middle" font-size="12" fill="#475569">api/plays · …/tracking</text>
+  <text x="415" y="244" text-anchor="middle" font-size="12" fill="#475569">api/chat</text>
+  <text x="415" y="268" text-anchor="middle" font-size="11" fill="#047857">sirve también el build del dashboard</text>
+
+  <!-- 3. Amazon Nova Pro -->
+  <g filter="url(#shadow)">
+    <rect x="570" y="90" width="230" height="190" rx="14" fill="#ffffff" stroke="#f59e0b" stroke-width="2"/>
+    <rect x="570" y="90" width="230" height="44" rx="14" fill="#f59e0b"/>
+    <rect x="570" y="118" width="230" height="16" fill="#f59e0b"/>
+  </g>
+  <text x="685" y="118" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">Amazon Nova Pro</text>
+  <text x="685" y="160" text-anchor="middle" font-size="13" fill="#0f172a">strands-agents + boto3</text>
+  <text x="685" y="184" text-anchor="middle" font-size="12" fill="#475569">Herramientas @tool sobre los JSON</text>
+  <text x="685" y="204" text-anchor="middle" font-size="12" fill="#475569">Protocolo verificado por el servidor</text>
+  <text x="685" y="224" text-anchor="middle" font-size="12" fill="#475569">Análisis Coach · Scout · 2D</text>
+  <text x="685" y="244" text-anchor="middle" font-size="12" fill="#475569">Jugada recomendada validada</text>
+  <text x="685" y="268" text-anchor="middle" font-size="11" fill="#b45309">respaldo local si Bedrock falla</text>
+
+  <!-- 4. React + Cancha 2D -->
+  <g filter="url(#shadow)">
+    <rect x="840" y="90" width="210" height="190" rx="14" fill="#ffffff" stroke="#6366f1" stroke-width="2"/>
+    <rect x="840" y="90" width="210" height="44" rx="14" fill="#6366f1"/>
+    <rect x="840" y="118" width="210" height="16" fill="#6366f1"/>
+  </g>
+  <text x="945" y="118" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">React + Cancha 2D</text>
+  <text x="945" y="160" text-anchor="middle" font-size="13" fill="#0f172a">Vite + Tailwind + Recharts</text>
+  <text x="945" y="184" text-anchor="middle" font-size="12" fill="#475569">Vistas Coach y Scout</text>
+  <text x="945" y="204" text-anchor="middle" font-size="12" fill="#475569">Copiloto IA</text>
+  <!-- mini cancha -->
+  <rect x="885" y="216" width="120" height="50" rx="3" fill="#15803d"/>
+  <line x1="895" y1="216" x2="895" y2="266" stroke="#ffffff" stroke-width="1"/>
+  <line x1="995" y1="216" x2="995" y2="266" stroke="#ffffff" stroke-width="1"/>
+  <line x1="945" y1="216" x2="945" y2="266" stroke="#ffffff" stroke-width="1" stroke-dasharray="3 3"/>
+  <circle cx="930" cy="234" r="3.5" fill="#fbbf24"/>
+  <circle cx="938" cy="250" r="3.5" fill="#fbbf24"/>
+  <circle cx="958" cy="236" r="3.5" fill="#e2e8f0"/>
+  <circle cx="964" cy="252" r="3.5" fill="#e2e8f0"/>
+  <path d="M930 234 Q 950 222 972 240" stroke="#ffffff" stroke-width="1.2" fill="none" stroke-dasharray="2 2"/>
+
+  <!-- flechas -->
+  <line x1="262" y1="185" x2="296" y2="185" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <line x1="532" y1="172" x2="566" y2="172" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <line x1="566" y1="198" x2="532" y2="198" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <line x1="802" y1="185" x2="836" y2="185" stroke="#64748b" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <path d="M945 282 L945 306 L415 306 L415 284" stroke="#94a3b8" stroke-width="2" fill="none" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+  <text x="680" y="324" text-anchor="middle" font-size="12" fill="#64748b">fetch('api/…') · rutas relativas sin diagonal inicial</text>
+</svg>

@@ -1,7 +1,7 @@
 /**
  * Acceso a la API FastAPI (backend/main.py).
  * Rutas relativas SIN diagonal inicial: la app se publica en una subruta (/evento/equipo/).
- * En desarrollo, Vite reenvía /api a http://localhost:8000 (vite.config.ts).
+ * En desarrollo, el proxy de vite.config.ts reenvía api/ al backend (puerto 8000).
  */
 import type {
   ChatRequest,
@@ -31,13 +31,16 @@ export class ApiError extends Error {
   }
 }
 
+/** Base relativa de la API (contrato de despliegue AWS: nunca host absoluto ni diagonal inicial) */
+const API_BASE = 'api'
+
 const loadMock = () => import('../data/mockData')
 const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms))
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   let res: Response
   try {
-    res = await fetch(`api/${path}`, { headers: { Accept: 'application/json' }, ...init })
+    res = await fetch(`${API_BASE}/${path}`, { headers: { Accept: 'application/json' }, ...init })
   } catch {
     throw new ApiError('network', 'No se pudo conectar con el backend.')
   }
@@ -59,7 +62,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
         : undefined
     if (res.status === 503) throw new ApiError('not-ready', 'Los datos del análisis no están listos.', 503, detail)
     if (res.status >= 500 && !detail) throw new ApiError('network', 'El backend no responde.', res.status)
-    throw new ApiError('http', `Error ${res.status} en api/${path}`, res.status, detail)
+    throw new ApiError('http', `Error ${res.status} en ${API_BASE}/${path}`, res.status, detail)
   }
   return body as T
 }
